@@ -1,0 +1,11 @@
+Tlacitka
+- login
+- registrace
+- odhlaseni
+- Vytvorit akci
+--> Vytvoreni akce, kam se budou moct pridavat Users a Expenses
+- uzavrit akci 
+--> z Expenses se vytvori Debts,
+	ktere se pripisou Users
+- vytvorit dluh
+--> Vytvoreni Debt
