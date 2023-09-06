@@ -1,28 +1,28 @@
 package com.herian.expensesharingapp.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Expense {
+@Builder
+@Table(name="my_group")
+public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long amount;
-    private Date createdAt;
+    private String name;
     private String description;
+    private Date createdAt;
 
-    @ManyToOne
-    @JoinColumn(name = "person_id")
-    private Person person;
+    @ManyToMany(mappedBy = "groupList", cascade = { CascadeType.ALL })
+    private List<Person> personList;
 }

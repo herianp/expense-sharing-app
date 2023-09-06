@@ -1,13 +1,12 @@
 package com.herian.expensesharingapp.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Date;
 
 @Entity
 @Getter
@@ -18,4 +17,14 @@ public class Debt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private Long amount;
+    private Date createdAt;
+    private String description;
+    private Date dueDate;
+    private Long personIdToPayBack;
+
+    @ManyToOne
+    @JoinColumn(name = "person_id")
+    private Person person;
 }
