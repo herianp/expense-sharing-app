@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,15 +25,14 @@ public class ProjectSecurityConfig {
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }
-//      We created own userDetailsService in config folder, when i want to use default user, i let this in code
+//      We created own userDetailsService in config folder, when I want to use default user, let this in code
 //    @Bean
 //    public UserDetailsService userDetailsService(DataSource dataSource) {
 //        return new JdbcUserDetailsManager(dataSource);
 //    }
 
-//    TODO change this for more secure encoder
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 }
