@@ -1,2 +1,1 @@
-# expense-sharing-app
-Bakalařská práce: Project for Spring Boot - Expense sharing app
+Setup for spring boot project with security and own user from database
