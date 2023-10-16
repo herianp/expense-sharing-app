@@ -3,6 +3,7 @@ package com.herian.expensesharingapp.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +22,7 @@ public class Group {
 
     private String name;
     private String description;
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @ManyToMany(mappedBy = "groupList", cascade = { CascadeType.ALL })
     private List<Person> personList;

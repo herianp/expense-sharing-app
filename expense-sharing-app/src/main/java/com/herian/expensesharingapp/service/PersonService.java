@@ -1,17 +1,16 @@
 package com.herian.expensesharingapp.service;
 
+import com.herian.expensesharingapp.dto.PersonDto;
 import com.herian.expensesharingapp.entity.Person;
 import com.herian.expensesharingapp.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PersonService {
+public interface PersonService {
 
-    @Autowired
-    private PersonRepository personRepository;
+    PersonDto findByEmail(String email);
 
-    public Person findByEmail(String email){
-        return personRepository.findOneByEmail(email);
-    }
+    PersonDto createPerson(PersonDto personDto);
 }

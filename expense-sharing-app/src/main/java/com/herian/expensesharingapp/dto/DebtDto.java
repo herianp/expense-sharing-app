@@ -1,6 +1,8 @@
-package com.herian.expensesharingapp.entity;
+package com.herian.expensesharingapp.dto;
 
-import jakarta.persistence.*;
+import com.herian.expensesharingapp.entity.Person;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,21 +10,15 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Expense {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class DebtDto {
     private Long amount;
     private LocalDateTime createdAt;
     private String description;
-
-    @ManyToOne
-    @JoinColumn(name = "person_id")
-    private Person person;
+    private LocalDateTime dueDate;
+    private Long personIdToPayBack;
+    private Long personId;
 }

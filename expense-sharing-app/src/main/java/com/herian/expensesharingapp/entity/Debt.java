@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -19,9 +19,9 @@ public class Debt {
     private Long id;
 
     private Long amount;
-    private Date createdAt;
+    private LocalDateTime createdAt;
     private String description;
-    private Date dueDate;
+    private LocalDateTime dueDate;
     private Long personIdToPayBack;
 
     @ManyToOne

@@ -1,7 +1,6 @@
 package com.herian.expensesharingapp.repository;
 
 import com.herian.expensesharingapp.entity.Debt;
-import com.herian.expensesharingapp.entity.Expense;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -10,10 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ExpenseRepository extends JpaRepository<Expense, Long> {
+public interface DebtRepository extends JpaRepository<Debt, Long> {
 
-    Optional<Expense> findById(Long id);
+    @Query("SELECT d FROM Debt d WHERE d.person.id = :personId")
+    List<Debt> findDebtListByPersonId(Long personId);
 
-    @Query("SELECT e FROM Expense e WHERE e.person.id = :personId")
-    List<Expense> findExpenseListByPersonId(Long personId);
+    Optional<Debt> findById(Long id);
 }
