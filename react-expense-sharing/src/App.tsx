@@ -1,12 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import "./App.css";
 import InputField from "./components/InputField";
-import { Todo } from "./components/model";
+import { Todo, TodoReducer } from "./components/model";
 import TodoList from "./components/TodoList";
 
 const App: React.FC = () => {
   const [todo, setTodo] = useState<string>("");
-  const [todoList, setTodoList] = useState<Todo[]>([]);
+  // const [todoList, setTodoList] = useState<Todo[]>([]);
+  const [todoList, dispatch] = useReducer(TodoReducer, [])
 
   const handleAdd = (e: React.FormEvent) => {
     //  stops the form from being submitted in the traditional way
@@ -14,19 +15,19 @@ const App: React.FC = () => {
     e.preventDefault();
 
     if (todo) {
-      setTodoList([...todoList, { id: Date.now(), todo, isDone: false }]);
+      dispatch({type: 'add', payload: todo})
       setTodo("");
     }
   };
-  console.log(todoList);
 
   return (
     <div className="app">
       <span className="heading">Taskify</span>
       <InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd} />
-      <TodoList todoList={todoList} setTodoList={setTodoList} />
+      <TodoList todoList={todoList} dispatch={dispatch} />
     </div>
   );
 };
 
 export default App;
+
