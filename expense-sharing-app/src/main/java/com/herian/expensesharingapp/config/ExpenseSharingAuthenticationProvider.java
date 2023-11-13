@@ -1,7 +1,10 @@
 package com.herian.expensesharingapp.config;
 
+import com.herian.expensesharingapp.config.filter.JWTTokenGeneratorFilter;
 import com.herian.expensesharingapp.entity.Person;
 import com.herian.expensesharingapp.repository.PersonRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,13 +26,16 @@ public class ExpenseSharingAuthenticationProvider implements AuthenticationProvi
     private PersonRepository personRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    private final Logger LOGGER = LoggerFactory.getLogger(ExpenseSharingAuthenticationProvider.class);
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
         List<Person> personList = personRepository.findByEmail(authentication.getName());
+        LOGGER.info("User authentication process - email:" + personList.get(0).getEmail());
         if (personList.size()>0){
+            LOGGER.info("User authentication process - email:" + personList.get(0).getEmail());
             if (passwordEncoder.matches(password, personList.get(0).getPassword())) {
                 List<GrantedAuthority> authorities = new ArrayList<>();
                 authorities.add(new SimpleGrantedAuthority(personList.get(0).getRole()));

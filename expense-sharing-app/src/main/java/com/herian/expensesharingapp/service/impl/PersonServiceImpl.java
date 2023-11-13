@@ -1,5 +1,7 @@
-package com.herian.expensesharingapp.service;
+package com.herian.expensesharingapp.service.impl;
 
+import com.herian.expensesharingapp.controller.PersonController;
+import com.herian.expensesharingapp.dto.LoginDto;
 import com.herian.expensesharingapp.dto.PersonDto;
 import com.herian.expensesharingapp.entity.Debt;
 import com.herian.expensesharingapp.entity.Expense;
@@ -7,6 +9,11 @@ import com.herian.expensesharingapp.entity.Group;
 import com.herian.expensesharingapp.entity.Person;
 import com.herian.expensesharingapp.repository.DebtRepository;
 import com.herian.expensesharingapp.repository.PersonRepository;
+import com.herian.expensesharingapp.service.PersonService;
+import com.herian.expensesharingapp.service.impl.DebtServiceImpl;
+import com.herian.expensesharingapp.service.impl.ExpenseServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +29,7 @@ public class PersonServiceImpl implements PersonService {
     private PersonRepository personRepository;
     @Autowired
     private DebtRepository debtRepository;
+
     @Autowired
     PasswordEncoder passwordEncoder;
 
@@ -30,6 +38,7 @@ public class PersonServiceImpl implements PersonService {
     @Autowired
     ExpenseServiceImpl expenseServiceImpl;
 
+    private final Logger LOGGER = LoggerFactory.getLogger(PersonServiceImpl.class);
     @Override
     public PersonDto findByEmail(String email) {
         Person person = personRepository.findOneByEmail(email);
@@ -55,8 +64,16 @@ public class PersonServiceImpl implements PersonService {
         return mapPersonToPersonDto(savedPerson);
     }
 
+    @Override
+    public void loginPerson(LoginDto loginDto) {
+        LOGGER.info("Login logic...");
+    }
+
     public PersonDto mapPersonToPersonDto(Person person) {
         PersonDto personDto = new PersonDto();
+        if (person.getId()!=null){
+            personDto.setId(person.getId());
+        }
         personDto.setUsername(person.getUsername());
         personDto.setPassword(person.getPassword());
         personDto.setEmail(person.getEmail());
@@ -78,6 +95,9 @@ public class PersonServiceImpl implements PersonService {
 
     public Person mapPersonDtoToPerson(PersonDto personDto) {
         Person person = new Person();
+        if (personDto.getId()!=null){
+            person.setId(personDto.getId());
+        }
         person.setUsername(personDto.getUsername());
         person.setPassword(personDto.getPassword());
         person.setEmail(personDto.getEmail());

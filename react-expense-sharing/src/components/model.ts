@@ -4,6 +4,43 @@ export interface Todo {
   isDone: boolean;
 }
 
+export interface Person {
+  id: number;
+  username: string;
+  password: string;
+  email: string;
+  role?: string;
+  debtList?: Debt[];
+  expenseList?: Expense[];
+  groupList?: Group[];
+}
+
+export interface Debt {
+  id: number;
+  amount: number;
+  createdAt: string | Date;
+  description: string;
+  dueDate: string | Date; 
+  personIdToPayBack: number;
+  person: Person;
+}
+
+export interface Expense {
+  id: number;
+  amount: number;
+  createdAt: string | Date; 
+  description: string;
+  person: Person;
+}
+
+export interface Group {
+  id: number;
+  name: string;
+  description: string;
+  createdAt: string | Date; 
+  personList: Person[];
+}
+
 // action v useReducer ma dva atributy: type and payload
 export type Actions =
   | { type: "add"; payload: string }

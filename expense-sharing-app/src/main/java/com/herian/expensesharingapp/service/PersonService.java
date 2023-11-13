@@ -1,5 +1,6 @@
 package com.herian.expensesharingapp.service;
 
+import com.herian.expensesharingapp.dto.LoginDto;
 import com.herian.expensesharingapp.dto.PersonDto;
 import com.herian.expensesharingapp.entity.Person;
 import com.herian.expensesharingapp.repository.PersonRepository;
@@ -13,4 +14,6 @@ public interface PersonService {
     PersonDto findByEmail(String email);
 
     PersonDto createPerson(PersonDto personDto);
+
+    void loginPerson(LoginDto loginDto);
 }

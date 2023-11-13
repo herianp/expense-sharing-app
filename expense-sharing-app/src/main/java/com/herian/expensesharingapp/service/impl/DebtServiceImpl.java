@@ -1,10 +1,11 @@
-package com.herian.expensesharingapp.service;
+package com.herian.expensesharingapp.service.impl;
 
 import com.herian.expensesharingapp.dto.DebtDto;
 import com.herian.expensesharingapp.entity.Debt;
 import com.herian.expensesharingapp.entity.Person;
 import com.herian.expensesharingapp.repository.DebtRepository;
 import com.herian.expensesharingapp.repository.PersonRepository;
+import com.herian.expensesharingapp.service.DebtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

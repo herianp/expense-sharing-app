@@ -1,5 +1,6 @@
 package com.herian.expensesharingapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 

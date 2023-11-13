@@ -1,5 +1,6 @@
 package com.herian.expensesharingapp.controller;
 
+import com.herian.expensesharingapp.dto.LoginDto;
 import com.herian.expensesharingapp.dto.PersonDto;
 import com.herian.expensesharingapp.entity.Person;
 import com.herian.expensesharingapp.repository.PersonRepository;
@@ -25,5 +26,11 @@ public class LoginController {
     public ResponseEntity<String> registerUser(@RequestBody PersonDto personDto) {
         personService.createPerson(personDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("User is successfully registered!");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUser(@RequestBody LoginDto loginDto) {
+        personService.loginPerson(loginDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("User is successfully logged in!");
     }
 }
