@@ -21,7 +21,7 @@ public class PersonController {
     @GetMapping("{email}")
     public ResponseEntity<PersonDto> getPerson(@PathVariable String email) {
         logger.info("Success call:" + email);
-        PersonDto personDto = personService.findByEmail(email);
+        PersonDto personDto = personService.findOneByEmail(email);
         return ResponseEntity.status(HttpStatus.OK).body(personDto);
     }
 }

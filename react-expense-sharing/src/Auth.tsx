@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getPersonByEmailRequest, setAuthHeader } from "./axios/axiosRequests";
+import { getPersonByEmailRequest } from "./axios/axiosRequests";
 import { Person } from "./components/model";
 
 interface AuthProps {
@@ -10,14 +10,14 @@ const AuthContent: React.FC<AuthProps> = (props) => {
   const [data, setData] = useState<Person | undefined>();
 
   useEffect(() => {
-    getPersonByEmailRequest("petr@seznam.cz")
+    getPersonByEmailRequest("honza@seznam.cz")
       .then((data) => {
         setData(data);
       })
       .catch((error) => {
         console.error("Error in useEffect:", error);
       });
-  }, []);
+  }, [data]);
 
   return (
     <div>

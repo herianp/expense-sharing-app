@@ -3,10 +3,7 @@ package com.herian.expensesharingapp.service.impl;
 import com.herian.expensesharingapp.controller.PersonController;
 import com.herian.expensesharingapp.dto.LoginDto;
 import com.herian.expensesharingapp.dto.PersonDto;
-import com.herian.expensesharingapp.entity.Debt;
-import com.herian.expensesharingapp.entity.Expense;
-import com.herian.expensesharingapp.entity.Group;
-import com.herian.expensesharingapp.entity.Person;
+import com.herian.expensesharingapp.entity.*;
 import com.herian.expensesharingapp.repository.DebtRepository;
 import com.herian.expensesharingapp.repository.PersonRepository;
 import com.herian.expensesharingapp.service.PersonService;
@@ -20,6 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,9 +40,12 @@ public class PersonServiceImpl implements PersonService {
 
     private final Logger LOGGER = LoggerFactory.getLogger(PersonServiceImpl.class);
     @Override
-    public PersonDto findByEmail(String email) {
-        Person person = personRepository.findOneByEmail(email);
-        return mapPersonToPersonDto(person);
+    public PersonDto findOneByEmail(String email) {
+        Optional<Person> person = personRepository.findOneByEmail(email);
+        if (person.isEmpty()){
+            throw new RuntimeException("User not found");
+        }
+        return mapPersonToPersonDto(person.get());
     }
 
     @Override
@@ -64,11 +67,6 @@ public class PersonServiceImpl implements PersonService {
         return mapPersonToPersonDto(savedPerson);
     }
 
-    @Override
-    public void loginPerson(LoginDto loginDto) {
-        LOGGER.info("Login logic...");
-    }
-
     public PersonDto mapPersonToPersonDto(Person person) {
         PersonDto personDto = new PersonDto();
         if (person.getId()!=null){
@@ -77,7 +75,7 @@ public class PersonServiceImpl implements PersonService {
         personDto.setUsername(person.getUsername());
         personDto.setPassword(person.getPassword());
         personDto.setEmail(person.getEmail());
-        personDto.setRole(person.getRole());
+        personDto.setRole(person.getRole().toString());
 
         personDto.setDebtList(person.getDebtList()
                 .stream()
@@ -98,10 +96,14 @@ public class PersonServiceImpl implements PersonService {
         if (personDto.getId()!=null){
             person.setId(personDto.getId());
         }
-        person.setUsername(personDto.getUsername());
+        person.setMy_username(personDto.getUsername());
         person.setPassword(personDto.getPassword());
         person.setEmail(personDto.getEmail());
-        person.setRole(personDto.getRole());
+        try {
+            person.setRole(Role.valueOf(personDto.getRole().toUpperCase(Locale.ROOT)));
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Role " + personDto.getRole().toUpperCase(Locale.ROOT) + " does not exist.");
+        }
 
         person.setDebtList(personDto.getDebtList()
                 .stream()

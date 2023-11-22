@@ -7,6 +7,7 @@ import Header from "./components/Header";
 import Auth from "./Auth";
 import LoginForm from "./components/LoginForm";
 import RegistrationForm from "./components/RegistrationForm";
+import * as axiosRequests from "./axios/axiosRequests";
 
 const App: React.FC = () => {
   const [todo, setTodo] = useState<string>("");
@@ -26,6 +27,7 @@ const App: React.FC = () => {
 
   const handleLogin = (email: string, password: string) => {
     console.log("Login attempt with:", email, password);
+    axiosRequests.login(email,password);
   };
 
   const handleRegistration = (username: string, email: string, password: string) => {

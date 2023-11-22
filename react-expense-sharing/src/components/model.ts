@@ -4,6 +4,10 @@ export interface Todo {
   isDone: boolean;
 }
 
+export interface AuthenticationResponse {
+  token: string;
+}
+
 export interface Person {
   id: number;
   username: string;
