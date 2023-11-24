@@ -1,14 +1,12 @@
 import axios, { AxiosResponse } from "axios";
-import { AuthenticationResponse, Person } from "../components/model";
-import { getCookie } from "typescript-cookie";
+import { AuthenticationResponse, Person, PersonFriend } from "../types/model";
 
 // INTERCEPTORS
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("auth_token");
-    console.log("Interceptors: " + token);
     if (token && token != undefined) {
-      config.headers["Authorization"] = token;
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
     return config;
   },
@@ -38,10 +36,23 @@ export const getPersonByEmailRequest = async (email: string) => {
   }
 };
 
+export const addFriendByEmail = async (email: string) => {
+  const url: string = `http://localhost:8080/api/person/friend/${email}`;
+  try {
+    const response: AxiosResponse<PersonFriend, any> = await axios.post(url);
+    console.log("Get Friend response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.log("Error fetching data:", error);
+    throw error;
+  }
+};
+
 export const login = async (email: string, password: string) => {
   const url: string = "http://localhost:8080/api/v1/auth/authenticate";
   try {
     console.log("Login method");
+    window.localStorage.removeItem("auth_token");
     const response: AxiosResponse = await axios.post(url, { email, password });
     const response_data: AuthenticationResponse | null = response.data;
 

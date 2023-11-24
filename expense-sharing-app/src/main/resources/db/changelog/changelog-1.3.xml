@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet id="1694095309893-1" author="petah">
+    <!-- ChangeSet to create the join table -->
+        <createTable tableName="person_friends">
+            <column name="person_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="friend_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- ChangeSet to add primary key constraint -->
+    <changeSet id="1694095309893-2" author="petah">
+        <addPrimaryKey columnNames="person_id, friend_id" tableName="person_friends" constraintName="pk_person_friends"/>
+    </changeSet>
+
+    <!-- ChangeSet to add foreign key constraint for person_id -->
+    <changeSet id="1694095309893-3" author="petah">
+        <addForeignKeyConstraint baseTableName="person_friends" baseColumnNames="person_id"
+                                 referencedTableName="my_person" referencedColumnNames="id"
+                                 constraintName="fk_person_friends_person"/>
+    </changeSet>
+
+    <!-- ChangeSet to add foreign key constraint for friend_id -->
+    <changeSet id="1694095309893-4" author="petah">
+        <addForeignKeyConstraint baseTableName="person_friends" baseColumnNames="friend_id"
+                                 referencedTableName="my_person" referencedColumnNames="id"
+                                 constraintName="fk_person_friends_friend"/>
+    </changeSet>
+
+
+</databaseChangeLog>

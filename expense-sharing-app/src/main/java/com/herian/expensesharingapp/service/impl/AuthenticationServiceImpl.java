@@ -7,6 +7,7 @@ import com.herian.expensesharingapp.entity.Person;
 import com.herian.expensesharingapp.entity.Role;
 import com.herian.expensesharingapp.repository.PersonRepository;
 import com.herian.expensesharingapp.service.AuthenticationService;
+import com.herian.expensesharingapp.service.mapper.EntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +27,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JWTServiceImpl jwtService;
     private final AuthenticationManager authenticationManager;
+
+    private final EntityMapper entityMapper;
 
     @Override
     public AuthenticationResponse register(RegisterRequest request) {
@@ -35,6 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .expenseList(new ArrayList<>())
                 .debtList(new ArrayList<>())
                 .groupList(new ArrayList<>())
+                .personFriends(new HashSet<>())
                 .build();
         personRepository.save(person);
         var jwtToken = jwtService.generateToken(person);
@@ -54,6 +60,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var jwtToken = jwtService.generateToken(person);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .personDto(entityMapper.mapPersonToPersonDto(person))
                 .build();
+    }
+
+    @Override
+    public void addFriends() {
+        List<Person> persons = personRepository.findAll();
+        for (Person person : persons) {
+            // Logic to determine and set the friendList for person
+            person.setPersonFriends(new HashSet<>());
+            personRepository.save(person);
+        }
     }
 }

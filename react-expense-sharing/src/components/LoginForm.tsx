@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { getPersonByEmailRequest } from "../axios/axiosRequests";
-import { Person } from "./model";
+import { Person } from "../types/model";
+import { useStore } from "../store/store";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
-interface LoginFormProps {
-  onSubmit: (email: string, password: string) => void;
-}
+interface LoginFormProps {}
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
+const LoginForm: React.FC<LoginFormProps> = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -14,17 +14,24 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
   const [password2, setPassword2] = useState("");
   const [data, setData] = useState<Person | undefined>();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const loginAction = useStore((state) => state.login);
+  const navigate = useNavigate();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    //zajistuje nam aby se po submit nerefreshla stranka
     e.preventDefault();
-    onSubmit(email, password);
+
+    await loginAction(email, password);
+    navigate("/debts");
+    window.location.reload();
   };
 
   const handleRequestSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    getPersonByEmailRequest(email)
+    getPersonByEmailRequest(email2)
       .then((data) => {
         setData(data);
-        console.log("Email from request: "+ data?.email)
+        console.log("Email from request: " + data?.email);
       })
       .catch((error) => {
         console.error("Error in useEffect:", error);
@@ -33,7 +40,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleLogin}>
         <div>
           <label htmlFor="email">Email:</label>
           <input

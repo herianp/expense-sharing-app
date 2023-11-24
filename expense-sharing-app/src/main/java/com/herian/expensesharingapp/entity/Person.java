@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -17,7 +18,7 @@ import java.util.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="my_person")
+@Table(name = "my_person")
 public class Person implements UserDetails {
 
     @Id
@@ -25,14 +26,14 @@ public class Person implements UserDetails {
     private Long id;
 
     @NotEmpty
-    @Column(unique=true)
+    @Column(unique = true)
     private String my_username;
 
     @NotEmpty
     private String password;
     @Email
     @NotEmpty
-    @Column(unique=true)
+    @Column(unique = true)
     private String email;
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -51,6 +52,16 @@ public class Person implements UserDetails {
             joinColumns = @JoinColumn(name = "person_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id"))
     private List<Group> groupList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "person")
+    private Set<PersonFriend> personFriends = new HashSet<>();
+
+    @Transient
+    public Set<String> getFriendList() {
+        return personFriends.stream()
+                .map(PersonFriend::getFriendEmail)
+                .collect(Collectors.toSet());
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,6 +1,7 @@
 package com.herian.expensesharingapp.controller;
 
 import com.herian.expensesharingapp.dto.PersonDto;
+import com.herian.expensesharingapp.dto.PersonFriendDto;
 import com.herian.expensesharingapp.service.PersonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +19,19 @@ public class PersonController {
     @Autowired
     private PersonService personService;
 
-    @GetMapping("{email}")
+    @GetMapping("/{email}")
     public ResponseEntity<PersonDto> getPerson(@PathVariable String email) {
-        logger.info("Success call:" + email);
+        logger.info("Success call: /" + email);
         PersonDto personDto = personService.findOneByEmail(email);
+        logger.info("PersonDTO friends: " + personDto.getPersonFriends());
         return ResponseEntity.status(HttpStatus.OK).body(personDto);
+    }
+
+    @PostMapping("/friend/{email}")
+    public ResponseEntity<PersonFriendDto> createFriend(@PathVariable String email) {
+        logger.info("Success call: /friend/" + email);
+        PersonFriendDto response = personService.createFriend(email);
+        logger.info("Good: /friend/" + email);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

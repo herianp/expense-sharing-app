@@ -1,12 +1,14 @@
 package com.herian.expensesharingapp.dto;
 
 import com.herian.expensesharingapp.entity.Group;
+import com.herian.expensesharingapp.entity.PersonFriend;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -20,5 +22,6 @@ public class PersonDto {
     private String role;
     private List<DebtDto> debtList;
     private List<ExpenseDto> expenseList;
-    private List<Group> groupList;
+    private List<GroupDto> groupList;
+    private Set<PersonFriendDto> personFriends;
 }

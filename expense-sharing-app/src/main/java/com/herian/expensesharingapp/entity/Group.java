@@ -1,5 +1,6 @@
 package com.herian.expensesharingapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,5 +26,6 @@ public class Group {
     private LocalDateTime createdAt;
 
     @ManyToMany(mappedBy = "groupList", cascade = { CascadeType.ALL })
+    @JsonIgnore
     private List<Person> personList;
 }

@@ -53,7 +53,7 @@ public class JWTServiceImpl implements JWTService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 2)) //2 hours
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 2)) //2 hours
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact(); // generate and return token
     }

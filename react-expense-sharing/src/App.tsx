@@ -1,70 +1,26 @@
-import React, { useReducer, useState } from "react";
+import React from "react";
 import "./App.css";
-import InputField from "./components/InputField";
-import { TodoReducer } from "./components/model";
-import TodoList from "./components/TodoList";
 import Header from "./components/Header";
-import Auth from "./Auth";
-import LoginForm from "./components/LoginForm";
-import RegistrationForm from "./components/RegistrationForm";
-import * as axiosRequests from "./axios/axiosRequests";
+import Auth from "./components/Auth";
+import HomePage from "./components/HomePage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Authentication from "./components/Authentication";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 const App: React.FC = () => {
-  const [todo, setTodo] = useState<string>("");
-  const [todoList, dispatch] = useReducer(TodoReducer, []);
-  const [activeForm, setActiveForm] = useState<"login" | "register">("login");
-
-  const handleAdd = (e: React.FormEvent) => {
-    //  stops the form from being submitted in the traditional way
-    //      (which would cause the page to reload).
-    e.preventDefault();
-
-    if (todo) {
-      dispatch({ type: "add", payload: todo });
-      setTodo("");
-    }
-  };
-
-  const handleLogin = (email: string, password: string) => {
-    console.log("Login attempt with:", email, password);
-    axiosRequests.login(email,password);
-  };
-
-  const handleRegistration = (username: string, email: string, password: string) => {
-    console.log("Login attempt with:", email, password);
-  };
-
-  const getButtonStyle = (formType: "login" | "register") => {
-    return {
-      backgroundColor: activeForm === formType ? "green" : "white",
-      color: activeForm === formType ? "white" : "black",
-    };
-  };
-
   return (
     <div className="app">
-      <Header />
-      <InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd} />
-      <TodoList todoList={todoList} dispatch={dispatch} />
-      <Auth />
-      <button
-        style={getButtonStyle("login")}
-        onClick={() => setActiveForm("login")}
-      >
-        Login
-      </button>
-      <button
-        style={getButtonStyle("register")}
-        onClick={() => setActiveForm("register")}
-      >
-        Register
-      </button>
-
-      {activeForm === "login" ? (
-        <LoginForm onSubmit={handleLogin} />
-      ) : (
-        <RegistrationForm onSubmit={handleRegistration}/>
-      )}
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/login" element={<Authentication />} />
+          <Route path="/" element={<HomePage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/debts" element={<Auth />} />
+            {/* Add other protected routes here */}
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 };

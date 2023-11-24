@@ -1,17 +1,13 @@
-package com.herian.expensesharingapp.service.impl;
+package com.herian.expensesharingapp.service.mapper;
 
-import com.herian.expensesharingapp.controller.PersonController;
-import com.herian.expensesharingapp.dto.GroupDto;
-import com.herian.expensesharingapp.dto.LoginDto;
-import com.herian.expensesharingapp.dto.PersonDto;
-import com.herian.expensesharingapp.dto.PersonFriendDto;
+import com.herian.expensesharingapp.dto.*;
 import com.herian.expensesharingapp.entity.*;
 import com.herian.expensesharingapp.repository.DebtRepository;
 import com.herian.expensesharingapp.repository.PersonFriendRepository;
 import com.herian.expensesharingapp.repository.PersonRepository;
-import com.herian.expensesharingapp.service.PersonService;
 import com.herian.expensesharingapp.service.impl.DebtServiceImpl;
 import com.herian.expensesharingapp.service.impl.ExpenseServiceImpl;
+import com.herian.expensesharingapp.service.impl.PersonServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,78 +16,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class PersonServiceImpl implements PersonService {
+public class EntityMapper {
 
     @Autowired
     private PersonRepository personRepository;
-    @Autowired
-    private DebtRepository debtRepository;
-    @Autowired
-    private PersonFriendRepository personFriendRepository;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    DebtServiceImpl debtServiceImpl;
-    @Autowired
-    ExpenseServiceImpl expenseServiceImpl;
 
     private final Logger LOGGER = LoggerFactory.getLogger(PersonServiceImpl.class);
-
-    @Override
-    public PersonDto findOneByEmail(String email) {
-        Optional<Person> person = personRepository.findOneByEmail(email);
-        if (person.isEmpty()) {
-            throw new RuntimeException("User not found");
-        }
-        return mapPersonToPersonDto(person.get());
-    }
-
-    @Override
-    public PersonDto createPerson(PersonDto personDto) {
-        Person person = mapPersonDtoToPersonForCreateNewPerson(personDto);
-        Person savedPerson = null;
-        ResponseEntity<String> response = null;
-        try {
-            String hashPassword = passwordEncoder.encode(person.getPassword());
-            person.setPassword(hashPassword);
-            person.setDebtList(new ArrayList<Debt>());
-            person.setExpenseList(new ArrayList<Expense>());
-            person.setGroupList(new ArrayList<Group>());
-            savedPerson = personRepository.save(person);
-        } catch (Exception e) {
-//            TODO EXCEPTION HANDLER??
-            throw new RuntimeException("An exception occurred due to " + e.getMessage());
-        }
-        return mapPersonToPersonDto(savedPerson);
-    }
-
-    @Override
-    public PersonFriendDto createFriend(String email) {
-        Optional<Person> person = personRepository.findOneByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        if (person.isEmpty()) {
-            throw new RuntimeException("Person is not present [Maybe authentication problems -> SecurityContext].");
-        }
-        Optional<PersonFriend> personFriend = personFriendRepository.findByPersonId(person.get().getId());
-        if (personFriend.isEmpty()) {
-            PersonFriend newPersonFriend = PersonFriend.builder()
-                    .friendEmail(email)
-                    .person(person.get())
-                    .build();
-            PersonFriend savedPersonFriend = personFriendRepository.save(newPersonFriend);
-            person.get().getPersonFriends().add(savedPersonFriend);
-            LOGGER.info("PersonFriend successfully added");
-            return mapPersonFriendToPersonFriendDto(savedPersonFriend);
-        } else {
-            LOGGER.error("PersonFriend already Exists");
-            throw new RuntimeException("Person already exists.");
-        }
-    }
 
     public PersonFriendDto mapPersonFriendToPersonFriendDto(PersonFriend personFriend) {
         return PersonFriendDto
@@ -123,12 +61,12 @@ public class PersonServiceImpl implements PersonService {
 
         personDto.setDebtList(person.getDebtList()
                 .stream()
-                .map(x -> debtServiceImpl.mapDebtToDebtDto(x))
+                .map(this::mapDebtToDebtDto)
                 .collect(Collectors.toList()));
 
         personDto.setExpenseList(person.getExpenseList()
                 .stream()
-                .map(x -> expenseServiceImpl.mapExpenseToExpenseDto(x))
+                .map(this::mapExpenseToExpenseDto)
                 .collect(Collectors.toList()));
 
         List<GroupDto> groupDtoList = person.getGroupList().stream().map(this::mapGroupToGroupDto).toList();
@@ -162,5 +100,46 @@ public class PersonServiceImpl implements PersonService {
             throw new RuntimeException("Role " + personDto.getRole().toUpperCase(Locale.ROOT) + " does not exist.");
         }
         return person;
+    }
+
+    public DebtDto mapDebtToDebtDto(Debt debt) {
+        DebtDto debtDto = new DebtDto();
+        debtDto.setAmount(debt.getAmount());
+        debtDto.setDescription(debt.getDescription());
+        debtDto.setCreatedAt(debt.getCreatedAt());
+        debtDto.setDueDate(debt.getDueDate());
+        debtDto.setPersonIdToPayBack(debt.getPersonIdToPayBack());
+        debtDto.setPersonId(debt.getPerson().getId());
+        return debtDto;
+    }
+
+    public Debt mapDebtDtoToDebt(DebtDto debtDto) {
+        Debt debt = new Debt();
+        debt.setAmount(debtDto.getAmount());
+        debt.setDescription(debtDto.getDescription());
+        debt.setCreatedAt(debtDto.getCreatedAt());
+        debt.setDueDate(debtDto.getDueDate());
+        debt.setPersonIdToPayBack(debtDto.getPersonIdToPayBack());
+        Person person = personRepository.findById(debtDto.getPersonId()).get();
+        debt.setPerson(person);
+        return debt;
+    }
+
+    public Expense mapExpenseDtoToExpense(ExpenseDto expenseDto) {
+        Expense expense = new Expense();
+        expense.setAmount(expenseDto.getAmount());
+        expense.setCreatedAt(expenseDto.getCreatedAt());
+        expense.setDescription(expenseDto.getDescription());
+        expense.setPerson(personRepository.findById(expenseDto.getPersonId()).get());
+        return expense;
+    }
+
+    public ExpenseDto mapExpenseToExpenseDto(Expense expense) {
+        ExpenseDto expenseDto = new ExpenseDto();
+        expenseDto.setAmount(expense.getAmount());
+        expenseDto.setCreatedAt(expense.getCreatedAt());
+        expenseDto.setDescription(expense.getDescription());
+        expenseDto.setPersonId(expense.getPerson().getId());
+        return expenseDto;
     }
 }
