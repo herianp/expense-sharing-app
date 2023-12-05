@@ -25,4 +25,8 @@ public class Expense {
     @ManyToOne
     @JoinColumn(name = "person_id")
     private Person person;
+
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
 }

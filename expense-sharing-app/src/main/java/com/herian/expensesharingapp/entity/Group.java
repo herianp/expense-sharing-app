@@ -28,4 +28,7 @@ public class Group {
     @ManyToMany(mappedBy = "groupList", cascade = { CascadeType.ALL })
     @JsonIgnore
     private List<Person> personList;
+
+    @OneToMany(mappedBy = "group")
+    private List<Expense> expenseList;
 }
