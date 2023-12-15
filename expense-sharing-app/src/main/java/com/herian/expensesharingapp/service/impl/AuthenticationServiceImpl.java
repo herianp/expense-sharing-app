@@ -42,9 +42,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .groupList(new ArrayList<>())
                 .personFriends(new HashSet<>())
                 .build();
-        personRepository.save(person);
+        Person savedPerson = personRepository.save(person);
         var jwtToken = jwtService.generateToken(person);
-        return AuthenticationResponse.builder().token(jwtToken).build();
+        return AuthenticationResponse.builder().token(jwtToken).personDto(entityMapper.mapPersonToPersonDto(savedPerson)).build();
     }
 
     @Override

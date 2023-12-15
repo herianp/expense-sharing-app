@@ -25,10 +25,10 @@ public class GroupController {
         return ResponseEntity.status(HttpStatus.OK).body(groupDto);
     }
 
-    @PostMapping("/")
-    public ResponseEntity<GroupDto> createGroup(@RequestBody GroupDto groupDto) {
+    @PostMapping("/{name}/{personId}")
+    public ResponseEntity<GroupDto> createGroup(@PathVariable String name, @PathVariable Long personId ) {
         logger.info("Success call: POST api/group");
-        GroupDto outputGroupDto = groupService.createGroup(groupDto);
+        GroupDto outputGroupDto = groupService.createGroup(name, personId);
         if (outputGroupDto == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }

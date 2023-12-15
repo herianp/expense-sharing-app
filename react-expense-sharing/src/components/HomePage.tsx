@@ -1,32 +1,27 @@
 import React, { useState } from "react";
 import { useStore } from "../store/store";
-import { PersonFriend, Debt, Expense } from "../types/model";
+import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+
 
 const HomePage: React.FC = () => {
-  const [email, setEmail] = useState("");
+  const person = useStore((state) => state.person);
 
-  const addFriend = useStore((state) => state.addFriend);
-  const friends = useStore((state) => state.friends);
-
-  const handleAddFriend = async () => {
-    await addFriend(email);
-    setEmail("");
-  };
-
-  // Similar for debts and expenses
+  const navigate = useNavigate();
 
   return (
     <div>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Enter friend's email"
-      />
-      <button onClick={handleAddFriend}>Add Friend</button>
-      {friends.map((friend) => (
-        <div key={friend.id}>{friend.friendEmail}</div>
-      ))}
+      <h2>Už tě nebaví si pamatovat kdo ti dluží?</h2>
+      <h2>Píšeš si to všude možně, ale stejně na to zapomeneš?</h2>
+      <h2>Máme řešení přímo pro tebe!</h2>
+      <h2>Zaregistruj se a měj pod kontrolou všechny dluhy.</h2>
+      <Button
+              variant="secondary"
+              className="btn-header"
+              onClick={() => navigate("/register")}
+            >
+              Registruj se u nás
+            </Button>
     </div>
   );
 };

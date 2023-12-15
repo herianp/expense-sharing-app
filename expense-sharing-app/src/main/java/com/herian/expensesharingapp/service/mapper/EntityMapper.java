@@ -2,10 +2,7 @@ package com.herian.expensesharingapp.service.mapper;
 
 import com.herian.expensesharingapp.dto.*;
 import com.herian.expensesharingapp.entity.*;
-import com.herian.expensesharingapp.repository.DebtRepository;
-import com.herian.expensesharingapp.repository.ExpenseRepository;
-import com.herian.expensesharingapp.repository.PersonFriendRepository;
-import com.herian.expensesharingapp.repository.PersonRepository;
+import com.herian.expensesharingapp.repository.*;
 import com.herian.expensesharingapp.service.impl.DebtServiceImpl;
 import com.herian.expensesharingapp.service.impl.ExpenseServiceImpl;
 import com.herian.expensesharingapp.service.impl.PersonServiceImpl;
@@ -17,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.attribute.GroupPrincipal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -31,6 +29,8 @@ public class EntityMapper {
     @Autowired
     private ExpenseRepository expenseRepository;
 
+    @Autowired
+    private GroupRepository groupRepository;
 
     private final Logger LOGGER = LoggerFactory.getLogger(PersonServiceImpl.class);
 
@@ -57,7 +57,7 @@ public class EntityMapper {
         if (person.getId() != null) {
             personDto.setId(person.getId());
         }
-        personDto.setUsername(person.getUsername());
+        personDto.setUsername(person.getMy_username());
         personDto.setPassword(person.getPassword());
         personDto.setEmail(person.getEmail());
         personDto.setRole(person.getRole().toString());
@@ -84,10 +84,17 @@ public class EntityMapper {
         GroupDto groupDto = new GroupDto();
         groupDto.setId(group.getId());
         groupDto.setName(group.getName());
-        groupDto.setDescription(group.getDescription());
         groupDto.setCreatedAt(group.getCreatedAt());
-        groupDto.setPersonIds(group.getPersonList().stream().map(Person::getId).collect(Collectors.toList()));
-        groupDto.setExpenseIds(group.getExpenseList().stream().map(Expense::getId).collect(Collectors.toList()));
+        groupDto.setGroupOwnerId(group.getGroupOwnerId());
+        if (group.getDescription() != null) {
+            groupDto.setDescription(group.getDescription());
+        }
+        if (group.getPersonList() != null) {
+            groupDto.setPersonIds(group.getPersonList().stream().map(Person::getId).collect(Collectors.toList()));
+        }
+        if (group.getExpenseList() != null) {
+            groupDto.setExpenseIds(group.getExpenseList().stream().map(Expense::getId).collect(Collectors.toList()));
+        }
         return groupDto;
     }
 
@@ -95,16 +102,21 @@ public class EntityMapper {
         Group group = new Group();
         group.setId(groupDto.getId());
         group.setName(groupDto.getName());
-        group.setDescription(groupDto.getDescription());
         group.setCreatedAt(groupDto.getCreatedAt());
-        group.setPersonList(groupDto.getPersonIds()
-                .stream()
-                .map(id -> personRepository.findById(id).get())
-                .collect(Collectors.toList()));
-        group.setExpenseList(groupDto.getExpenseIds()
-                .stream()
-                .map(id -> expenseRepository.findById(id).get())
-                .collect(Collectors.toList()));
+        group.setGroupOwnerId(groupDto.getGroupOwnerId());
+        if (groupDto.getDescription() != null) {
+            group.setDescription(groupDto.getDescription());
+        }
+        if (groupDto.getPersonIds() != null) {
+            group.setPersonList(groupDto.getPersonIds()
+                    .stream()
+                    .map(id -> personRepository.findById(id).get())
+                    .collect(Collectors.toList()));        }
+        if (groupDto.getExpenseIds() != null) {
+            group.setExpenseList(groupDto.getExpenseIds()
+                    .stream()
+                    .map(id -> expenseRepository.findById(id).get())
+                    .collect(Collectors.toList()));        }
         return group;
     }
 
@@ -153,6 +165,9 @@ public class EntityMapper {
         expense.setCreatedAt(expenseDto.getCreatedAt());
         expense.setDescription(expenseDto.getDescription());
         expense.setPerson(personRepository.findById(expenseDto.getPersonId()).get());
+        if (expenseDto.getGroupId() != null){
+            expense.setGroup(groupRepository.findById(expenseDto.getGroupId()).get());
+        }
         return expense;
     }
 
@@ -162,7 +177,9 @@ public class EntityMapper {
         expenseDto.setCreatedAt(expense.getCreatedAt());
         expenseDto.setDescription(expense.getDescription());
         expenseDto.setPersonId(expense.getPerson().getId());
-        expenseDto.setGroupId(expense.getGroup().getId());
+        if (expense.getGroup() != null){
+            expenseDto.setGroupId(expense.getGroup().getId());
+        }
         return expenseDto;
     }
 }

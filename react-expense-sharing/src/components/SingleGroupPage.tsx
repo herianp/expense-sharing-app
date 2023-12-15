@@ -1,11 +1,11 @@
 import React from "react";
 import { useStore } from "../store/store";
 
-interface AuthProps {
+interface SingleGroupProps {
   // Definice pro props
 }
 
-const AuthContent: React.FC<AuthProps> = (props) => {
+const SingleGroupPage: React.FC<SingleGroupProps> = (props) => {
   const person = useStore((state) => state.person);
 
   // useEffect(() => {
@@ -20,10 +20,10 @@ const AuthContent: React.FC<AuthProps> = (props) => {
 
   return (
     <div>
-      <h1>Auth</h1>
+      <h1>Single group</h1>
       <p>User email: {person.email}</p>
     </div>
   );
 };
 
-export default AuthContent;
+export default SingleGroupPage;

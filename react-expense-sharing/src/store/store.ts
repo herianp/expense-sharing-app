@@ -20,6 +20,7 @@ interface StoreState {
   addExpense: (expenseData: Expense) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  registration: (userName: string, email: string, password: string) => Promise<void>;
 }
 
 export const useStore = create<StoreState>()(
@@ -88,6 +89,39 @@ export const useStore = create<StoreState>()(
         logout: () => {
           useStore.persist.clearStorage();
           localStorage.removeItem("auth_token");
+        },
+
+        registration: async (userName, email, password) => {
+          const url = "http://localhost:8080/api/v1/auth/authenticate/register";
+          try {
+            console.log("Registration method");
+            window.localStorage.removeItem("auth_token");
+            const response: AxiosResponse<AuthenticationResponse, any> =
+              await axios.post(url, { userName, email, password });
+            const response_data: AuthenticationResponse | null = response.data;
+
+            if (!response_data) {
+              console.error("No response data");
+              return;
+            }
+            console.log("Response data: " + response.data.personDto);
+            const { personDto, token } = response_data;
+            console.log("token: " + token + " | personDto: " + personDto);
+            if (token) {
+              set({ person: personDto });
+              set({ isAuthenticated: true });
+              // Optionally set token in localStorage and as the default header
+              window.localStorage.setItem("auth_token", token);
+              axios.defaults.headers.common[
+                "Authorization"
+              ] = `Bearer ${token}`;
+              console.log("Token stored and auth data set in the store.");
+            } else {
+              console.error("Token not found in the response data.");
+            }
+          } catch (error) {
+            console.error("Registration failed:", error);
+          }
         },
       }),
       {

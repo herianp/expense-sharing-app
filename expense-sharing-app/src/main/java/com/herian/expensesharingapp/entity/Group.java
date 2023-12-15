@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +25,9 @@ public class Group {
     @Column(unique = true)
     private String name;
     private String description;
+    @NotNull
+    @Column(nullable = false, name = "group_owner_id")
+    private Long groupOwnerId;
     private LocalDateTime createdAt;
 
     @ManyToMany(mappedBy = "groupList", cascade = { CascadeType.ALL })

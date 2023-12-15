@@ -9,33 +9,23 @@
     <changeSet id="1694095309893-1" author="petah">
     <!-- ChangeSet to create the join table -->
         <createTable tableName="person_friends">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_person_friends"/>
+            </column>
             <column name="person_id" type="bigint">
                 <constraints nullable="false" />
             </column>
-            <column name="friend_id" type="bigint">
+            <column name="friend_email" type="VARCHAR(255)">
                 <constraints nullable="false" />
             </column>
         </createTable>
     </changeSet>
 
-    <!-- ChangeSet to add primary key constraint -->
-    <changeSet id="1694095309893-2" author="petah">
-        <addPrimaryKey columnNames="person_id, friend_id" tableName="person_friends" constraintName="pk_person_friends"/>
-    </changeSet>
-
     <!-- ChangeSet to add foreign key constraint for person_id -->
-    <changeSet id="1694095309893-3" author="petah">
+    <changeSet id="1694095309893-2" author="petah">
         <addForeignKeyConstraint baseTableName="person_friends" baseColumnNames="person_id"
                                  referencedTableName="my_person" referencedColumnNames="id"
                                  constraintName="fk_person_friends_person"/>
     </changeSet>
-
-    <!-- ChangeSet to add foreign key constraint for friend_id -->
-    <changeSet id="1694095309893-4" author="petah">
-        <addForeignKeyConstraint baseTableName="person_friends" baseColumnNames="friend_id"
-                                 referencedTableName="my_person" referencedColumnNames="id"
-                                 constraintName="fk_person_friends_friend"/>
-    </changeSet>
-
 
 </databaseChangeLog>

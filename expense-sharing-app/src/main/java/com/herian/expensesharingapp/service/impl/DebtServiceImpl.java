@@ -26,6 +26,7 @@ public class DebtServiceImpl implements DebtService {
     public DebtDto createDebt(DebtDto debtDto) {
         Debt debt = mapDebtDtoToDebt(debtDto);
         debt.setCreatedAt(LocalDateTime.now());
+        debt.setDueDate(LocalDateTime.now().plusMonths(1));
         Debt savedDebt = debtRepository.save(debt);
         return mapDebtToDebtDto(savedDebt);
     }

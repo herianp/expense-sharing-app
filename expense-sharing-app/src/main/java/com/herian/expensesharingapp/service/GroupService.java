@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service;
 public interface GroupService {
 
     GroupDto getGroupByName(String name);
-    GroupDto createGroup(GroupDto groupDto);
+    GroupDto createGroup(String name, Long personId);
 }

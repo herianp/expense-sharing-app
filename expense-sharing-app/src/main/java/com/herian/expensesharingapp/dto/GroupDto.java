@@ -16,6 +16,7 @@ public class GroupDto {
     private Long id;
     private String name;
     private String description;
+    private Long groupOwnerId;
     private LocalDateTime createdAt;
     private List<Long> personIds;
     private List<Long> expenseIds;
