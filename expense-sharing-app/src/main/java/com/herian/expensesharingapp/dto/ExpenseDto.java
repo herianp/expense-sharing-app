@@ -18,4 +18,5 @@ public class ExpenseDto {
     private LocalDateTime createdAt;
     private String description;
     private Long personId;
+    private Long groupId;
 }

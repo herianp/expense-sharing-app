@@ -3,6 +3,7 @@ package com.herian.expensesharingapp.service.mapper;
 import com.herian.expensesharingapp.dto.*;
 import com.herian.expensesharingapp.entity.*;
 import com.herian.expensesharingapp.repository.DebtRepository;
+import com.herian.expensesharingapp.repository.ExpenseRepository;
 import com.herian.expensesharingapp.repository.PersonFriendRepository;
 import com.herian.expensesharingapp.repository.PersonRepository;
 import com.herian.expensesharingapp.service.impl.DebtServiceImpl;
@@ -27,6 +28,8 @@ public class EntityMapper {
 
     @Autowired
     private PersonRepository personRepository;
+    @Autowired
+    private ExpenseRepository expenseRepository;
 
 
     private final Logger LOGGER = LoggerFactory.getLogger(PersonServiceImpl.class);
@@ -77,13 +80,32 @@ public class EntityMapper {
         return personDto;
     }
 
-    public GroupDto mapGroupToGroupDto(Group group){
+    public GroupDto mapGroupToGroupDto(Group group) {
         GroupDto groupDto = new GroupDto();
         groupDto.setId(group.getId());
         groupDto.setName(group.getName());
         groupDto.setDescription(group.getDescription());
         groupDto.setCreatedAt(group.getCreatedAt());
+        groupDto.setPersonIds(group.getPersonList().stream().map(Person::getId).collect(Collectors.toList()));
+        groupDto.setExpenseIds(group.getExpenseList().stream().map(Expense::getId).collect(Collectors.toList()));
         return groupDto;
+    }
+
+    public Group mapGroupDtoToGroup(GroupDto groupDto) {
+        Group group = new Group();
+        group.setId(groupDto.getId());
+        group.setName(groupDto.getName());
+        group.setDescription(groupDto.getDescription());
+        group.setCreatedAt(groupDto.getCreatedAt());
+        group.setPersonList(groupDto.getPersonIds()
+                .stream()
+                .map(id -> personRepository.findById(id).get())
+                .collect(Collectors.toList()));
+        group.setExpenseList(groupDto.getExpenseIds()
+                .stream()
+                .map(id -> expenseRepository.findById(id).get())
+                .collect(Collectors.toList()));
+        return group;
     }
 
     public Person mapPersonDtoToPersonForCreateNewPerson(PersonDto personDto) {
@@ -140,6 +162,7 @@ public class EntityMapper {
         expenseDto.setCreatedAt(expense.getCreatedAt());
         expenseDto.setDescription(expense.getDescription());
         expenseDto.setPersonId(expense.getPerson().getId());
+        expenseDto.setGroupId(expense.getGroup().getId());
         return expenseDto;
     }
 }
