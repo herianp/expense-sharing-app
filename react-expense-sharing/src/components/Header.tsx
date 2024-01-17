@@ -1,9 +1,9 @@
 import React from "react";
-import { Button } from "react-bootstrap";
+import { Button, Dropdown } from "react-bootstrap";
 import "../css/Header.css"; // Předpokládá se soubor s CSS
-import reactLogo from "../img/react_icon.png";
+import logoPng from "../img/logo_desolve.png";
 import { useStore } from "../store/store";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate, Link } from "react-router-dom"; // Import useNavigate
 
 interface HeaderProps {
   // zde můžete přidat vlastní props, pokud jsou potřeba
@@ -29,8 +29,40 @@ const Header: React.FC<HeaderProps> = () => {
 
   return (
     <header className="header">
-      <div className="left-section">
-        <img src={reactLogo} alt="React Logo" className="react-logo" />
+      {/* Your logo and other elements */}
+      {/* Bootstrap Dropdown for Mobile */}
+      <div className="d-block d-md-none" style={{ textAlign: "center" }}>
+        <h1>DEBT SOLVER</h1>
+      </div>
+      <div className="d-block d-md-none">
+        <Dropdown>
+          <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+            Menu
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            {isAuthenticated ? (
+              <>
+                <Dropdown.Item onClick={() => navigateTo("/dashboard")}>
+                  Dashboard
+                </Dropdown.Item>
+                {/* Other authenticated links */}
+              </>
+            ) : (
+              <>
+                <Dropdown.Item onClick={() => navigateTo("/home")}>
+                  Home
+                </Dropdown.Item>
+                {/* Other unauthenticated links */}
+              </>
+            )}
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+
+      {/* Regular menu for larger screens */}
+      <div className="d-none d-md-flex justify-content-between align-items-center">
+      <img src={logoPng} alt="Desolve logo" style={{width:"50px"}}/>
         {isAuthenticated ? (
           <>
             <Button
@@ -70,24 +102,28 @@ const Header: React.FC<HeaderProps> = () => {
             </Button>
           </>
         ) : (
-          <Button
-            onClick={() => navigateTo("/home")}
-            variant="secondary"
-            className="btn-header"
-          >
-            Home
-          </Button>
+          <>
+            <Button
+              onClick={() => navigateTo("/home")}
+              variant="secondary"
+              className="btn-header"
+            >
+              Home
+            </Button>
+          </>
         )}
       </div>
-      <div className="right-section">
+      <div className="d-none d-md-block">
         {isAuthenticated ? (
-          <Button
-            variant="secondary"
-            className="btn-header"
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
+          <>
+            <Button
+              variant="secondary"
+              className="btn-header"
+              onClick={handleLogout}
+            >
+              Logout
+            </Button>
+          </>
         ) : (
           <>
             <Button

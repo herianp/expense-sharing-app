@@ -21,27 +21,40 @@ const LoginForm: React.FC<LoginFormProps> = () => {
   };
 
   return (
-    <div>
+    <div className="loginForm">
+      <h1>LOGIN FORM</h1>
       <form onSubmit={handleLogin}>
-        <div>
-          <label htmlFor="email">Email:</label>
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">
+            Email address
+          </label>
           <input
             type="email"
+            className="form-control"
             id="email"
-            value={email}
+            aria-describedby="emailHelp"
             onChange={(e) => setEmail(e.target.value)}
           />
+          <div id="emailHelp" className="form-text">
+            We'll never share your email with anyone else.
+          </div>
         </div>
-        <div>
-          <label htmlFor="password">Password:</label>
+        <div className="mb-3">
+          <label htmlFor="password" className="form-label">
+            Password
+          </label>
           <input
             type="password"
+            className="form-control"
             id="password"
-            value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <button type="submit">Login</button>
+        <div className="d-grid">
+          <button type="submit" className="btn btn-dark btn-lg">
+            Přihlásit se
+          </button>
+        </div>
       </form>
     </div>
   );

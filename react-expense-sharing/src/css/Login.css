@@ -1,0 +1,15 @@
+
+.loginPage {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+  }
+
+  .loginForm {
+    padding-top: 5%;
+  }
+
+  .loginForm h1 {
+    font-size: 40px;
+  }

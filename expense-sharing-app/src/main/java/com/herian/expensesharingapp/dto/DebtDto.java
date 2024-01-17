@@ -20,5 +20,6 @@ public class DebtDto {
     private String description;
     private LocalDateTime dueDate;
     private Long personIdToPayBack;
+    private String personNameToPayBack;
     private Long personId;
 }

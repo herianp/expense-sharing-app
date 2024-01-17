@@ -12,12 +12,12 @@ export interface Person {
   debtList?: Debt[];
   expenseList?: Expense[];
   groupList?: Group[];
-  personFriends?: Set<PersonFriend>;
+  personFriends?: PersonFriend[];
 }
 
 export interface PersonFriend {
   id: number;
-  person: Person;
+  personId: number;
   friendEmail: string;
 }
 
@@ -28,6 +28,7 @@ export interface Debt {
   description: string;
   dueDate: string | Date; 
   personIdToPayBack: number;
+  personNameToPayBack: string;
   person: Person;
 }
 

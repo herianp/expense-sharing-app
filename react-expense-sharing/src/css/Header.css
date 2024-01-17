@@ -1,27 +1,114 @@
 .header {
-    background-color: black;
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    width: 100vw;
-    margin-bottom: 20px;
+  background-color: black;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  width: 100vw;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.header h1 {
+  margin: 0;
+  color: white;
+  text-align: center;
+}
+
+.react-logo {
+  animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .left-section, .right-section {
-    display: flex;
-    align-items: center;
+  100% {
+    transform: rotate(360deg);
   }
-  
-  .react-logo {
-    animation: spin 10s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  .btn-header {
-    color: white !important;
-    margin: 0px 10px;
-  }
+}
+
+.btn-header {
+  color: white !important;
+  margin: 0px 10px;
+}
+/* 
+  <header className="header">
+      <div className="left-section">
+        <img src={reactLogo} alt="React Logo" className="react-logo" />
+        {isAuthenticated ? (
+          <>
+            <Button
+              onClick={() => navigateTo("/dashboard")}
+              variant="secondary"
+              className="btn-header"
+            >
+              Dashboard
+            </Button>
+            <Button
+              onClick={() => navigateTo("/debts")}
+              variant="secondary"
+              className="btn-header"
+            >
+              Debts
+            </Button>
+            <Button
+              onClick={() => navigateTo("/groups")}
+              variant="secondary"
+              className="btn-header"
+            >
+              Groups
+            </Button>
+            <Button
+              onClick={() => navigateTo("/friends")}
+              variant="secondary"
+              className="btn-header"
+            >
+              Friends
+            </Button>
+            <Button
+              onClick={() => navigateTo("/history")}
+              variant="secondary"
+              className="btn-header"
+            >
+              History
+            </Button>
+          </>
+        ) : (
+          <Button
+            onClick={() => navigateTo("/home")}
+            variant="secondary"
+            className="btn-header"
+          >
+            Home
+          </Button>
+        )}
+      </div>
+      <div className="right-section">
+        {isAuthenticated ? (
+          <Button
+            variant="secondary"
+            className="btn-header"
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+        ) : (
+          <>
+            <Button
+              variant="secondary"
+              className="btn-header"
+              onClick={() => navigateTo("/register")}
+            >
+              Registration
+            </Button>
+            <Button
+              variant="secondary"
+              className="btn-header"
+              onClick={() => navigateTo("/login")}
+            >
+              Login
+            </Button>
+          </>
+        )}
+      </div>
+    </header> */

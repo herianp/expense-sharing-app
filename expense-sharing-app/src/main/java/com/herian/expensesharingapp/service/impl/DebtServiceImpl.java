@@ -53,6 +53,7 @@ public class DebtServiceImpl implements DebtService {
         debtDto.setCreatedAt(debt.getCreatedAt());
         debtDto.setDueDate(debt.getDueDate());
         debtDto.setPersonIdToPayBack(debt.getPersonIdToPayBack());
+        debtDto.setPersonNameToPayBack(debt.getPerson().getMy_username());
         debtDto.setPersonId(debt.getPerson().getId());
         return debtDto;
     }

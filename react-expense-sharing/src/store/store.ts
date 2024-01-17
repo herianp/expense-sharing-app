@@ -71,6 +71,9 @@ export const useStore = create<StoreState>()(
             console.log("token: " + token + " | personDto: " + personDto);
             if (token) {
               set({ person: personDto });
+              set({ debts: personDto.debtList });
+              set({ expenses: personDto.expenseList });
+              set({ friends: personDto.personFriends });
               set({ isAuthenticated: true });
               // Optionally set token in localStorage and as the default header
               window.localStorage.setItem("auth_token", token);
@@ -92,7 +95,7 @@ export const useStore = create<StoreState>()(
         },
 
         registration: async (userName, email, password) => {
-          const url = "http://localhost:8080/api/v1/auth/authenticate/register";
+          const url = "http://localhost:8080/api/v1/auth/register";
           try {
             console.log("Registration method");
             window.localStorage.removeItem("auth_token");

@@ -143,6 +143,7 @@ public class EntityMapper {
         debtDto.setCreatedAt(debt.getCreatedAt());
         debtDto.setDueDate(debt.getDueDate());
         debtDto.setPersonIdToPayBack(debt.getPersonIdToPayBack());
+        debtDto.setPersonNameToPayBack(personRepository.findById(debt.getPersonIdToPayBack()).get().getMy_username());
         debtDto.setPersonId(debt.getPerson().getId());
         return debtDto;
     }
