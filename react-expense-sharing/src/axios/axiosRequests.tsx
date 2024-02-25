@@ -7,6 +7,7 @@ axios.interceptors.request.use(
     const token = localStorage.getItem("auth_token");
     if (token && token != undefined) {
       config.headers["Authorization"] = `Bearer ${token}`;
+      console.log("Authorization header set:", config.headers["Authorization"]); // Verify the header is set
     }
     return config;
   },
@@ -14,6 +15,7 @@ axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
 // HEADERS
 export const setAuthHeader = (token: string) => {
   window.localStorage.setItem("auth_token", token);

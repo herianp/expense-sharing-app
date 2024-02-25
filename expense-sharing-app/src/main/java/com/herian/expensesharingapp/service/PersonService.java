@@ -14,4 +14,7 @@ public interface PersonService {
 
     PersonFriendDto createFriend(String email);
 
+    void deleteFriend(String email);
+
+    PersonDto getFriendByEmail(String email);
 }

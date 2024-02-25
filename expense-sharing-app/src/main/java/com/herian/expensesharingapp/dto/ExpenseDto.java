@@ -13,10 +13,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExpenseDto {
-
     private Long amount;
     private LocalDateTime createdAt;
     private String description;
     private Long personId;
+    private LocalDateTime dueDate;
+    private Long personIdWhoIsPay;
+    private String personNameWhoIsPay;
     private Long groupId;
 }

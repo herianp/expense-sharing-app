@@ -29,9 +29,23 @@ public class PersonController {
 
     @PostMapping("/friend/{email}")
     public ResponseEntity<PersonFriendDto> createFriend(@PathVariable String email) {
-        logger.info("Success call: /friend/" + email);
+        logger.info("Success call POST: /friend/" + email);
         PersonFriendDto response = personService.createFriend(email);
         logger.info("Good: /friend/" + email);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/friend/{email}")
+    public ResponseEntity<PersonDto> getFriendByEmail(@PathVariable String email) {
+        logger.info("Success call GET: /friend/" + email);
+        PersonDto response = personService.getFriendByEmail(email);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @DeleteMapping("/friend/delete/{email}")
+    public ResponseEntity deleteFriend(@PathVariable String email) {
+        logger.info("Success call: /friend/delete" + email);
+        personService.deleteFriend(email);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

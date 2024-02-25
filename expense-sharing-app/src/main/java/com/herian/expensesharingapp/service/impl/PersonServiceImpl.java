@@ -1,8 +1,6 @@
 package com.herian.expensesharingapp.service.impl;
 
-import com.herian.expensesharingapp.controller.PersonController;
 import com.herian.expensesharingapp.dto.GroupDto;
-import com.herian.expensesharingapp.dto.LoginDto;
 import com.herian.expensesharingapp.dto.PersonDto;
 import com.herian.expensesharingapp.dto.PersonFriendDto;
 import com.herian.expensesharingapp.entity.*;
@@ -10,8 +8,8 @@ import com.herian.expensesharingapp.repository.DebtRepository;
 import com.herian.expensesharingapp.repository.PersonFriendRepository;
 import com.herian.expensesharingapp.repository.PersonRepository;
 import com.herian.expensesharingapp.service.PersonService;
-import com.herian.expensesharingapp.service.impl.DebtServiceImpl;
-import com.herian.expensesharingapp.service.impl.ExpenseServiceImpl;
+import com.herian.expensesharingapp.service.mapper.EntityMapper;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,23 +22,19 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PersonServiceImpl implements PersonService {
 
     @Autowired
     private PersonRepository personRepository;
-    @Autowired
-    private DebtRepository debtRepository;
+
     @Autowired
     private PersonFriendRepository personFriendRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @Autowired
-    DebtServiceImpl debtServiceImpl;
-    @Autowired
-    ExpenseServiceImpl expenseServiceImpl;
-
+    private final EntityMapper entityMapper;
     private final Logger LOGGER = LoggerFactory.getLogger(PersonServiceImpl.class);
 
     @Override
@@ -49,12 +43,12 @@ public class PersonServiceImpl implements PersonService {
         if (person.isEmpty()) {
             throw new RuntimeException("User not found");
         }
-        return mapPersonToPersonDto(person.get());
+        return entityMapper.mapPersonToPersonDto(person.get());
     }
 
     @Override
     public PersonDto createPerson(PersonDto personDto) {
-        Person person = mapPersonDtoToPersonForCreateNewPerson(personDto);
+        Person person = entityMapper.mapPersonDtoToPersonForCreateNewPerson(personDto);
         Person savedPerson = null;
         ResponseEntity<String> response = null;
         try {
@@ -68,7 +62,7 @@ public class PersonServiceImpl implements PersonService {
 //            TODO EXCEPTION HANDLER??
             throw new RuntimeException("An exception occurred due to " + e.getMessage());
         }
-        return mapPersonToPersonDto(savedPerson);
+        return entityMapper.mapPersonToPersonDto(savedPerson);
     }
 
     @Override
@@ -77,8 +71,13 @@ public class PersonServiceImpl implements PersonService {
         if (person.isEmpty()) {
             throw new RuntimeException("Person is not present [Maybe authentication problems -> SecurityContext].");
         }
-        Optional<PersonFriend> personFriend = personFriendRepository.findByPersonId(person.get().getId());
+        Optional<PersonFriend> personFriend = personFriendRepository.findByFriendEmail(email);
         if (personFriend.isEmpty()) {
+            Optional<Person> friend = personRepository.findOneByEmail(email);
+            if (friend.isEmpty()){
+                LOGGER.error("Email address of friend does not Exists");
+                throw new RuntimeException("Email address of friend does not Exists");
+            }
             PersonFriend newPersonFriend = PersonFriend.builder()
                     .friendEmail(email)
                     .person(person.get())
@@ -86,81 +85,36 @@ public class PersonServiceImpl implements PersonService {
             PersonFriend savedPersonFriend = personFriendRepository.save(newPersonFriend);
             person.get().getPersonFriends().add(savedPersonFriend);
             LOGGER.info("PersonFriend successfully added");
-            return mapPersonFriendToPersonFriendDto(savedPersonFriend);
+            return entityMapper.mapPersonFriendToPersonFriendDto(savedPersonFriend);
         } else {
             LOGGER.error("PersonFriend already Exists");
-            throw new RuntimeException("Person already exists.");
+            throw new RuntimeException("PersonFriend already exists.");
         }
     }
 
-    public PersonFriendDto mapPersonFriendToPersonFriendDto(PersonFriend personFriend) {
-        return PersonFriendDto
-                .builder()
-                .id(personFriend.getId())
-                .personId(personFriend.getPerson().getId())
-                .friendEmail(personFriend.getFriendEmail())
-                .build();
-    }
-
-    public PersonFriend mapPersonFriendDtoToPersonFriend(PersonFriendDto personFriendDto, Person person) {
-        return PersonFriend
-                .builder()
-                .id(personFriendDto.getId())
-                .person(person)
-                .friendEmail(personFriendDto.getFriendEmail())
-                .build();
-    }
-
-    public PersonDto mapPersonToPersonDto(Person person) {
-        PersonDto personDto = new PersonDto();
-        if (person.getId() != null) {
-            personDto.setId(person.getId());
+    @Override
+    public void deleteFriend(String email) {
+        Optional<Person> person = personRepository.findOneByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        Set<PersonFriend> personFriends = person.get().getPersonFriends();
+        for(PersonFriend personFriend : personFriends){
+            LOGGER.info(email + " <--> " + personFriend.getFriendEmail());
+            if (personFriend.getFriendEmail().equals(email)){
+                personFriendRepository.delete(personFriend);
+                return;
+            }
         }
-        personDto.setUsername(person.getUsername());
-        personDto.setPassword(person.getPassword());
-        personDto.setEmail(person.getEmail());
-        personDto.setRole(person.getRole().toString());
-
-        personDto.setDebtList(person.getDebtList()
-                .stream()
-                .map(x -> debtServiceImpl.mapDebtToDebtDto(x))
-                .collect(Collectors.toList()));
-
-        personDto.setExpenseList(person.getExpenseList()
-                .stream()
-                .map(x -> expenseServiceImpl.mapExpenseToExpenseDto(x))
-                .collect(Collectors.toList()));
-
-        List<GroupDto> groupDtoList = person.getGroupList().stream().map(this::mapGroupToGroupDto).toList();
-
-        personDto.setGroupList(groupDtoList);
-        personDto.setPersonFriends(person.getPersonFriends()
-                .stream().map(this::mapPersonFriendToPersonFriendDto).collect(Collectors.toSet()));
-        return personDto;
     }
 
-    public GroupDto mapGroupToGroupDto(Group group){
-        GroupDto groupDto = new GroupDto();
-        groupDto.setId(group.getId());
-        groupDto.setName(group.getName());
-        groupDto.setDescription(group.getDescription());
-        groupDto.setCreatedAt(group.getCreatedAt());
-        return groupDto;
-    }
-
-    public Person mapPersonDtoToPersonForCreateNewPerson(PersonDto personDto) {
-        Person person = new Person();
-        if (personDto.getId() != null) {
-            person.setId(personDto.getId());
+    @Override
+    public PersonDto getFriendByEmail(String email) {
+        Optional<Person> person = personRepository.findOneByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        Set<PersonFriend> personFriends = person.get().getPersonFriends();
+        for(PersonFriend personFriend : personFriends) {
+            if (personFriend.getFriendEmail().equals(email)){
+                Optional<Person> friend = personRepository.findOneByEmail(email);
+                return entityMapper.mapPersonToPersonDto(friend.get());
+            }
         }
-        person.setMy_username(personDto.getUsername());
-        person.setPassword(personDto.getPassword());
-        person.setEmail(personDto.getEmail());
-        try {
-            person.setRole(Role.valueOf(personDto.getRole().toUpperCase(Locale.ROOT)));
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Role " + personDto.getRole().toUpperCase(Locale.ROOT) + " does not exist.");
-        }
-        return person;
+        throw new RuntimeException("PersonFriend does not exists.");
     }
 }

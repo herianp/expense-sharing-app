@@ -14,19 +14,23 @@ const LoginForm: React.FC<LoginFormProps> = () => {
   const handleLogin = async (e: React.FormEvent) => {
     //zajistuje nam aby se po submit nerefreshla stranka
     e.preventDefault();
-
+    try {
     await loginAction(email, password);
     navigate("/dashboard");
     window.location.reload();
+    }
+    catch (error){
+      console.log(error)
+    }
   };
 
   return (
     <div className="loginForm">
-      <h1>LOGIN FORM</h1>
+      <h1>Vítejte, přihlaste se prosím.</h1>
       <form onSubmit={handleLogin}>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
-            Email address
+            E-mail
           </label>
           <input
             type="email"
@@ -34,26 +38,33 @@ const LoginForm: React.FC<LoginFormProps> = () => {
             id="email"
             aria-describedby="emailHelp"
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
-          <div id="emailHelp" className="form-text">
-            We'll never share your email with anyone else.
-          </div>
         </div>
         <div className="mb-3">
           <label htmlFor="password" className="form-label">
-            Password
+            Heslo
           </label>
           <input
             type="password"
             className="form-control"
             id="password"
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </div>
         <div className="d-grid">
           <button type="submit" className="btn btn-dark btn-lg">
             Přihlásit se
           </button>
+          <div className="text-center">
+            <span>
+              Zapomenuté heslo?&nbsp;
+              <a href="/reset-password" className="link-light">
+                Obnova hesla
+              </a>
+            </span>
+          </div>
         </div>
       </form>
     </div>

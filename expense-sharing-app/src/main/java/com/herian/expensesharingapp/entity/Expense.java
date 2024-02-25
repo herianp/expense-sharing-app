@@ -21,6 +21,8 @@ public class Expense {
     private Long amount;
     private LocalDateTime createdAt;
     private String description;
+    private LocalDateTime dueDate;
+    private Long personIdWhoIsPay;
 
     @ManyToOne
     @JoinColumn(name = "person_id")

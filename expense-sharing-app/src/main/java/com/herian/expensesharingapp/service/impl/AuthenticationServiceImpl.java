@@ -1,5 +1,6 @@
 package com.herian.expensesharingapp.service.impl;
 
+import com.herian.expensesharingapp.dto.ErrorMessageDto;
 import com.herian.expensesharingapp.dto.auth.AuthenticationRequest;
 import com.herian.expensesharingapp.dto.auth.AuthenticationResponse;
 import com.herian.expensesharingapp.dto.auth.RegisterRequest;
@@ -11,7 +12,6 @@ import com.herian.expensesharingapp.service.mapper.EntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -65,12 +65,55 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void addFriends() {
-        List<Person> persons = personRepository.findAll();
-        for (Person person : persons) {
-            // Logic to determine and set the friendList for person
-            person.setPersonFriends(new HashSet<>());
-            personRepository.save(person);
+    public String resetPassword(AuthenticationRequest request) {
+        var person = personRepository.findOneByEmail(request.getEmail())
+                .orElseThrow();
+        person.setPassword(passwordEncoder.encode(request.getPassword()));
+        personRepository.save(person);
+        return "Password successfully changed";
+    }
+
+    @Override
+    public ErrorMessageDto validateRegistrationRequest(RegisterRequest request) {
+        ErrorMessageDto errorMessageDTO = new ErrorMessageDto();
+        errorMessageDTO.setCode(400);
+        if (request.getUserName().isEmpty()) {
+            errorMessageDTO.setErrorMessage("Username is empty!");
+            return errorMessageDTO;
         }
+        if (request.getEmail().isEmpty()) {
+            errorMessageDTO.setErrorMessage("Email is empty!");
+            return errorMessageDTO;
+        }
+        if (!isUsernameUnique(request.getUserName())) {
+            errorMessageDTO.setErrorMessage("Username is not unique!");
+            return errorMessageDTO;
+        }
+        if (!isEmailUnique(request.getEmail())) {
+            errorMessageDTO.setErrorMessage("E-mail is not unique!");
+            return errorMessageDTO;
+        }
+        errorMessageDTO.setCode(200);
+        return errorMessageDTO;
+    }
+
+    public boolean isEmailUnique(String email) {
+        List<Person> persons = personRepository.findAll();
+        for (Person p : persons) {
+            if (p.getEmail().equals(email)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isUsernameUnique(String username) {
+        List<Person> persons = personRepository.findAll();
+        for (Person p : persons) {
+            if (p.getMy_username().equals(username)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

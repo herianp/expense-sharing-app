@@ -12,6 +12,7 @@ public interface PersonFriendRepository extends JpaRepository<PersonFriend, Long
     @Query("SELECT p FROM PersonFriend p WHERE p.person.id = :personId")
     List<PersonFriend> findPersonFriendListByPersonId(Long personId);
 
-    Optional<PersonFriend> findByPersonId(Long id);
+    Optional<PersonFriend> findByPerson_Id(Long id);
     Optional<PersonFriend> findById(Long id);
+    Optional<PersonFriend> findByFriendEmail(String email);
 }

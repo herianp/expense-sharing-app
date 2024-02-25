@@ -11,5 +11,7 @@ public class PersonFriendDto {
 
     private Long id;
     private Long personId;
+    private Long friendId;
+    private String username;
     private String friendEmail;
 }

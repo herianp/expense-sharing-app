@@ -20,7 +20,11 @@ public class PersonFriend {
     @JoinColumn(name = "person_id")
     private Person person;
 
+    @Column(name = "friend_id")
+    private Long friendId;
+
     @Column(name = "friend_email")
     private String friendEmail;
+
 
 }

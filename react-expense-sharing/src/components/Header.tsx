@@ -44,14 +44,38 @@ const Header: React.FC<HeaderProps> = () => {
             {isAuthenticated ? (
               <>
                 <Dropdown.Item onClick={() => navigateTo("/dashboard")}>
-                  Dashboard
+                  Domů
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => navigateTo("/friends")}>
+                  Přátelé
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => navigateTo("/receivables")}>
+                  Pohledávky
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => navigateTo("/debts")}>
+                  Závazky
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => navigateTo("/groups")}>
+                  Skupiny
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => navigateTo("/history")}>
+                  Historie
+                </Dropdown.Item>
+                <Dropdown.Item onClick={handleLogout}>
+                  Odhlásit
                 </Dropdown.Item>
                 {/* Other authenticated links */}
               </>
             ) : (
               <>
                 <Dropdown.Item onClick={() => navigateTo("/home")}>
-                  Home
+                  Domů
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => navigateTo("/login")}>
+                  Přihlášení
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => navigateTo("/register")}>
+                  Registrace
                 </Dropdown.Item>
                 {/* Other unauthenticated links */}
               </>
@@ -70,29 +94,36 @@ const Header: React.FC<HeaderProps> = () => {
               variant="secondary"
               className="btn-header"
             >
-              Dashboard
-            </Button>
-            <Button
-              onClick={() => navigateTo("/debts")}
-              variant="secondary"
-              className="btn-header"
-            >
-              Debts
-            </Button>
-            <Button
-              onClick={() => navigateTo("/groups")}
-              variant="secondary"
-              className="btn-header"
-            >
-              Groups
+              Domů
             </Button>
             <Button
               onClick={() => navigateTo("/friends")}
               variant="secondary"
               className="btn-header"
             >
-              Friends
+              Přátelé
             </Button>
+            <Button
+              onClick={() => navigateTo("/receivables")}
+              variant="secondary"
+              className="btn-header"
+            >
+              Pohledávky
+            </Button>
+            <Button
+              onClick={() => navigateTo("/debts")}
+              variant="secondary"
+              className="btn-header"
+            >
+              Závazky
+            </Button>
+              <Button
+                  onClick={() => navigateTo("/groups")}
+                  variant="secondary"
+                  className="btn-header"
+              >
+                  Skupiny
+              </Button>
             <Button
               onClick={() => navigateTo("/history")}
               variant="secondary"
@@ -108,7 +139,7 @@ const Header: React.FC<HeaderProps> = () => {
               variant="secondary"
               className="btn-header"
             >
-              Home
+              Domů
             </Button>
           </>
         )}
@@ -121,7 +152,7 @@ const Header: React.FC<HeaderProps> = () => {
               className="btn-header"
               onClick={handleLogout}
             >
-              Logout
+              Odhlásit
             </Button>
           </>
         ) : (
@@ -131,14 +162,14 @@ const Header: React.FC<HeaderProps> = () => {
               className="btn-header"
               onClick={() => navigateTo("/register")}
             >
-              Registration
+              Registrace
             </Button>
             <Button
               variant="secondary"
               className="btn-header"
               onClick={() => navigateTo("/login")}
             >
-              Login
+              Přihlásit se
             </Button>
           </>
         )}

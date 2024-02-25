@@ -1,7 +1,5 @@
 package com.herian.expensesharingapp.dto;
 
-import com.herian.expensesharingapp.entity.Group;
-import com.herian.expensesharingapp.entity.PersonFriend;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -35,19 +35,28 @@ public class EntityMapper {
     private final Logger LOGGER = LoggerFactory.getLogger(PersonServiceImpl.class);
 
     public PersonFriendDto mapPersonFriendToPersonFriendDto(PersonFriend personFriend) {
+        Optional<Person> friend = personRepository.findOneByEmail(personFriend.getFriendEmail());
+        if (friend.isEmpty()){
+            LOGGER.error(this.getClass() + ": Person does not exists in DB.");
+            throw new RuntimeException("Person does not exists in DB.");
+        }
         return PersonFriendDto
                 .builder()
                 .id(personFriend.getId())
                 .personId(personFriend.getPerson().getId())
                 .friendEmail(personFriend.getFriendEmail())
+                .username(friend.get().getMy_username())
+                .friendId(friend.get().getId())
                 .build();
     }
 
     public PersonFriend mapPersonFriendDtoToPersonFriend(PersonFriendDto personFriendDto, Person person) {
+
         return PersonFriend
                 .builder()
                 .id(personFriendDto.getId())
                 .person(person)
+                .friendId(personFriendDto.getFriendId())
                 .friendEmail(personFriendDto.getFriendEmail())
                 .build();
     }
@@ -152,8 +161,12 @@ public class EntityMapper {
         Debt debt = new Debt();
         debt.setAmount(debtDto.getAmount());
         debt.setDescription(debtDto.getDescription());
-        debt.setCreatedAt(debtDto.getCreatedAt());
-        debt.setDueDate(debtDto.getDueDate());
+        if (debtDto.getCreatedAt() != null) {
+            debt.setCreatedAt(debtDto.getCreatedAt());
+        }
+        if(debtDto.getDueDate() != null) {
+            debt.setDueDate(debtDto.getDueDate());
+        }
         debt.setPersonIdToPayBack(debtDto.getPersonIdToPayBack());
         Person person = personRepository.findById(debtDto.getPersonId()).get();
         debt.setPerson(person);
@@ -163,8 +176,14 @@ public class EntityMapper {
     public Expense mapExpenseDtoToExpense(ExpenseDto expenseDto) {
         Expense expense = new Expense();
         expense.setAmount(expenseDto.getAmount());
-        expense.setCreatedAt(expenseDto.getCreatedAt());
+        if (expenseDto.getCreatedAt() != null) {
+            expense.setCreatedAt(expenseDto.getCreatedAt());
+        }
+        if(expenseDto.getDueDate() != null) {
+            expense.setDueDate(expenseDto.getDueDate());
+        }
         expense.setDescription(expenseDto.getDescription());
+        expense.setPersonIdWhoIsPay(expenseDto.getPersonIdWhoIsPay());
         expense.setPerson(personRepository.findById(expenseDto.getPersonId()).get());
         if (expenseDto.getGroupId() != null){
             expense.setGroup(groupRepository.findById(expenseDto.getGroupId()).get());
@@ -177,6 +196,9 @@ public class EntityMapper {
         expenseDto.setAmount(expense.getAmount());
         expenseDto.setCreatedAt(expense.getCreatedAt());
         expenseDto.setDescription(expense.getDescription());
+        expenseDto.setDueDate(expense.getDueDate());
+        expenseDto.setPersonIdWhoIsPay(expense.getPersonIdWhoIsPay());
+        expenseDto.setPersonNameWhoIsPay(personRepository.findById(expense.getPersonIdWhoIsPay()).get().getMy_username());
         expenseDto.setPersonId(expense.getPerson().getId());
         if (expense.getGroup() != null){
             expenseDto.setGroupId(expense.getGroup().getId());
