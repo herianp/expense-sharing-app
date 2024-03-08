@@ -16,8 +16,8 @@ const LoginForm: React.FC<LoginFormProps> = () => {
     e.preventDefault();
     try {
     await loginAction(email, password);
-    navigate("/dashboard");
-    window.location.reload();
+      navigate("/dashboard");
+      window.location.reload();
     }
     catch (error){
       console.log(error)

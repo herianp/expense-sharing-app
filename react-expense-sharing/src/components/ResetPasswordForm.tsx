@@ -81,7 +81,6 @@ const LoginForm: React.FC<LoginFormProps> = () => {
                     <div className="text-center">
                     </div>
                 </div>
-                {passwordConfirmation} ; {password}
             </form>
         </div>
     );

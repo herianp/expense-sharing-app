@@ -5,6 +5,7 @@ import com.herian.expensesharingapp.dto.PersonDto;
 import com.herian.expensesharingapp.dto.PersonFriendDto;
 import com.herian.expensesharingapp.entity.*;
 import com.herian.expensesharingapp.repository.DebtRepository;
+import com.herian.expensesharingapp.repository.GroupRepository;
 import com.herian.expensesharingapp.repository.PersonFriendRepository;
 import com.herian.expensesharingapp.repository.PersonRepository;
 import com.herian.expensesharingapp.service.PersonService;
@@ -30,6 +31,9 @@ public class PersonServiceImpl implements PersonService {
 
     @Autowired
     private PersonFriendRepository personFriendRepository;
+
+    @Autowired
+    private GroupRepository groupRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -71,13 +75,14 @@ public class PersonServiceImpl implements PersonService {
         if (person.isEmpty()) {
             throw new RuntimeException("Person is not present [Maybe authentication problems -> SecurityContext].");
         }
-        Optional<PersonFriend> personFriend = personFriendRepository.findByFriendEmail(email);
-        if (personFriend.isEmpty()) {
-            Optional<Person> friend = personRepository.findOneByEmail(email);
-            if (friend.isEmpty()){
-                LOGGER.error("Email address of friend does not Exists");
-                throw new RuntimeException("Email address of friend does not Exists");
-            }
+        Optional<Person> friend = personRepository.findOneByEmail(email);
+        if (friend.isEmpty()) {
+            throw new RuntimeException("Email address of friend does not Exists");
+        }
+
+        if (person.get().getFriendList().stream().anyMatch(item -> item.equals(email))) {
+            throw new RuntimeException("PersonFriend already exists.");
+        } else {
             PersonFriend newPersonFriend = PersonFriend.builder()
                     .friendEmail(email)
                     .person(person.get())
@@ -86,9 +91,6 @@ public class PersonServiceImpl implements PersonService {
             person.get().getPersonFriends().add(savedPersonFriend);
             LOGGER.info("PersonFriend successfully added");
             return entityMapper.mapPersonFriendToPersonFriendDto(savedPersonFriend);
-        } else {
-            LOGGER.error("PersonFriend already Exists");
-            throw new RuntimeException("PersonFriend already exists.");
         }
     }
 
@@ -96,9 +98,9 @@ public class PersonServiceImpl implements PersonService {
     public void deleteFriend(String email) {
         Optional<Person> person = personRepository.findOneByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         Set<PersonFriend> personFriends = person.get().getPersonFriends();
-        for(PersonFriend personFriend : personFriends){
+        for (PersonFriend personFriend : personFriends) {
             LOGGER.info(email + " <--> " + personFriend.getFriendEmail());
-            if (personFriend.getFriendEmail().equals(email)){
+            if (personFriend.getFriendEmail().equals(email)) {
                 personFriendRepository.delete(personFriend);
                 return;
             }
@@ -109,12 +111,21 @@ public class PersonServiceImpl implements PersonService {
     public PersonDto getFriendByEmail(String email) {
         Optional<Person> person = personRepository.findOneByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         Set<PersonFriend> personFriends = person.get().getPersonFriends();
-        for(PersonFriend personFriend : personFriends) {
-            if (personFriend.getFriendEmail().equals(email)){
+        for (PersonFriend personFriend : personFriends) {
+            if (personFriend.getFriendEmail().equals(email)) {
                 Optional<Person> friend = personRepository.findOneByEmail(email);
                 return entityMapper.mapPersonToPersonDto(friend.get());
             }
         }
         throw new RuntimeException("PersonFriend does not exists.");
+    }
+
+    @Override
+    public List<PersonDto> findPersonListByGroupName(String groupName) {
+        Optional<Group> group = groupRepository.findGroupByName(groupName);
+        if (group.isEmpty()) {
+            throw new RuntimeException("Group does not exists.");
+        }
+        return group.get().getPersonList().stream().map(entityMapper::mapPersonToPersonDto).collect(Collectors.toList());
     }
 }

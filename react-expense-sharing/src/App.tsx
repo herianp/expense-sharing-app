@@ -13,6 +13,7 @@ import LoginPage from "./pages/LoginPage";
 import RegistrationPage from "./pages/RegistrationPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ExpensesPage from "./pages/ExpensesPage";
+import SingleGroupPage from "./pages/SingleGroupPage";
 
 const App: React.FC = () => {
   return (
@@ -28,6 +29,7 @@ const App: React.FC = () => {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/debts" element={<DebtsPage />} />
             <Route path="/receivables" element={<ExpensesPage />} />
+            <Route path="/group/:groupId" element={<SingleGroupPage />} />
             <Route path="/groups" element={<GroupsPage />} />
             <Route path="/friends" element={<FriendsPage />} />
             <Route path="/history" element={<HistoryPage />} />

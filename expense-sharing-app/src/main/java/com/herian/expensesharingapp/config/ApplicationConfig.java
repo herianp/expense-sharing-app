@@ -29,8 +29,6 @@ import java.util.List;
 public class ApplicationConfig {
 
     private final PersonRepository personRepository;
-    private final Logger LOGGER = LoggerFactory.getLogger(ApplicationConfig.class);
-
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> personRepository.findOneByEmail(username)

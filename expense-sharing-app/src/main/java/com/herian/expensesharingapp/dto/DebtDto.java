@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DebtDto {
+    private Long id;
     private Long amount;
     private LocalDateTime createdAt;
     private String description;
@@ -22,4 +23,5 @@ public class DebtDto {
     private Long personIdToPayBack;
     private String personNameToPayBack;
     private Long personId;
+    private String status;
 }

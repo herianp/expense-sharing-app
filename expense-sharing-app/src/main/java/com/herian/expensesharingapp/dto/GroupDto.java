@@ -20,4 +20,5 @@ public class GroupDto {
     private LocalDateTime createdAt;
     private List<Long> personIds;
     private List<Long> expenseIds;
+    private List<Long> debtIds;
 }

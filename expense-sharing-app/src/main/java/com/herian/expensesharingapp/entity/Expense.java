@@ -1,5 +1,6 @@
 package com.herian.expensesharingapp.entity;
 
+import com.herian.expensesharingapp.enums.StatusOfAction;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,11 +25,17 @@ public class Expense {
     private LocalDateTime dueDate;
     private Long personIdWhoIsPay;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id")
     private Person person;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id")
     private Group group;
+
+    @OneToOne(mappedBy = "expense", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Debt debt;
+
+    @Enumerated(EnumType.STRING)
+    private StatusOfAction status;
 }

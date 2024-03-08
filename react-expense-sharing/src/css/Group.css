@@ -1,0 +1,23 @@
+.single-group-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    margin: 0 5%;
+}
+
+.group-tables {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 5%;
+}
+
+.group-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.group-buttons button {
+    margin: 5px;
+}

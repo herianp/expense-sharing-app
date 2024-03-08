@@ -26,5 +26,4 @@ public class PersonFriend {
     @Column(name = "friend_email")
     private String friendEmail;
 
-
 }

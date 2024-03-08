@@ -29,11 +29,14 @@ public class Group {
     @Column(nullable = false, name = "group_owner_id")
     private Long groupOwnerId;
     private LocalDateTime createdAt;
-
-    @ManyToMany(mappedBy = "groupList", cascade = { CascadeType.ALL })
+    //I deleted fetch eager for fields bellow
+    @ManyToMany(mappedBy = "groupList")
     @JsonIgnore
     private List<Person> personList;
 
-    @OneToMany(mappedBy = "group")
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Expense> expenseList;
+
+    @OneToMany(mappedBy = "group",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Debt> debtList;
 }

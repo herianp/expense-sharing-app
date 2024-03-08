@@ -5,15 +5,9 @@ import { AuthenticationResponse, Person, PersonFriend } from "../types/model";
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("auth_token");
-    if (token && token != undefined) {
-      config.headers["Authorization"] = `Bearer ${token}`;
-      console.log("Authorization header set:", config.headers["Authorization"]); // Verify the header is set
-    }
+    if (token && token != undefined) {config.headers["Authorization"] = `Bearer ${token}`;}
     return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
+  }, (error) => {return Promise.reject(error);}
 );
 
 // HEADERS

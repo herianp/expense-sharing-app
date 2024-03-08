@@ -12,6 +12,7 @@ const AddDebtForm: React.FC<AddDebtFormProps> = () => {
     const [selectedFriendId, setSelectedFriendId] = useState("");
 
     const addDebt = useStore(state => state.addDebt)
+    const addDebtWithExpense = useStore(state => state.addDebtWithExpense)
     const person = useStore((state) => state.person);
     const friends = useStore((state) => state.friends);
 
@@ -30,7 +31,8 @@ const AddDebtForm: React.FC<AddDebtFormProps> = () => {
             personNameToPayBack: undefined,
             groupId: undefined
         }
-        await addDebt(debtDto);
+        // await addDebt(debtDto);
+        await addDebtWithExpense(debtDto);
         setSelectedFriendId(""); // Clear the email input field
         setAmount("");
         setDescription("");
@@ -39,6 +41,9 @@ const AddDebtForm: React.FC<AddDebtFormProps> = () => {
     return (
         <form onSubmit={handleAddDebt}>
             <div className="form-group mb-3">
+                <label htmlFor="select" className="form-label">
+                    Komu dlužím
+                </label>
                 <select className="form-select mb-3" aria-label=".form-select-lg example"
                         value={selectedFriendId}
                         onChange={(e: ChangeEvent<HTMLSelectElement>) => setSelectedFriendId(e.target.value)}
@@ -52,8 +57,6 @@ const AddDebtForm: React.FC<AddDebtFormProps> = () => {
                         </option>
                     ))}
                 </select>
-                <p>Friend ID: {selectedFriendId}</p>
-                <p>Person ID: {person.id}</p>
                 <div className="form-group">
                     <label htmlFor="descriptionArea" className="form-label">
                         Popis

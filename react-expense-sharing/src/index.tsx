@@ -5,6 +5,7 @@ import App from "./App";
 import "bootstrap/dist/css/bootstrap.css";
 import "./css/Expenses.css";
 import "./css/Dashboard.css";
+import "./css/Group.css";
 import "./css/Base.css";
 import "./css/Friend.css";
 import "./css/Header.css";

@@ -1,11 +1,8 @@
 package com.herian.expensesharingapp.controller;
 
-import com.herian.expensesharingapp.controller.auth.AuthenticationController;
-import com.herian.expensesharingapp.dto.DebtDto;
 import com.herian.expensesharingapp.dto.ExpenseDto;
+import com.herian.expensesharingapp.dto.StatusDoneDto;
 import com.herian.expensesharingapp.service.ExpenseService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +16,6 @@ public class ExpenseController {
 
     @Autowired
     ExpenseService expenseService;
-    private final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
-
 
     @GetMapping("{id}")
     public ResponseEntity<ExpenseDto> getExpenseById(@PathVariable Long id){
@@ -36,9 +31,20 @@ public class ExpenseController {
 
     @PostMapping()
     public ResponseEntity<ExpenseDto> createExpense(@RequestBody ExpenseDto expenseDto){
-        LOGGER.info("Expense method: " + expenseDto);
+        // METODA PRO SKUPINU
         ExpenseDto expense_output = expenseService.createExpense(expenseDto);
         return ResponseEntity.status(HttpStatus.OK).body(expense_output);
     }
 
+    @PostMapping("/withDebt")
+    public ResponseEntity<ExpenseDto> createExpenseWithDebt(@RequestBody ExpenseDto expenseDto){
+        ExpenseDto expense_output = expenseService.createExpenseWithDebt(expenseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(expense_output);
+    }
+
+    @PostMapping("/statusDone/{expenseId}")
+    public ResponseEntity<StatusDoneDto> setDebtStatusToDoneAndExpenseStatusToDoneWell(@PathVariable Long expenseId){
+        StatusDoneDto output = expenseService.setDebtAndExpenseStatusToDone(expenseId);
+        return ResponseEntity.status(HttpStatus.OK).body(output);
+    }
 }

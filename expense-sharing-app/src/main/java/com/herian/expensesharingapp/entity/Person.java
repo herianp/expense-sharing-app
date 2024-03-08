@@ -1,6 +1,5 @@
 package com.herian.expensesharingapp.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,10 +37,10 @@ public class Person implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "person")
+    @OneToMany(mappedBy = "person", cascade = { CascadeType.ALL })
     private List<Debt> debtList;
 
-    @OneToMany(mappedBy = "person")
+    @OneToMany(mappedBy = "person", cascade = { CascadeType.ALL })
     private List<Expense> expenseList;
 
     @ManyToMany(cascade = {

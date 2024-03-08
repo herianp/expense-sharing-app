@@ -3,11 +3,7 @@ import {useStore} from "../store/store";
 import DebtsTable from "../components/DebtsTable";
 import AddDebtForm from "../components/AddDebtForm";
 
-interface DebtsProps {
-    // Definice pro props
-}
-
-const DebtsPage: React.FC<DebtsProps> = (props) => {
+const DebtsPage: React.FC = (props) => {
     const debtList = useStore((state) => state.debts);
 
     return (

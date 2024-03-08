@@ -12,7 +12,7 @@ const ExpensesPage: React.FC<ExpensesProps> = (props) => {
     return (
         <div className="base-container">
             <AddExpenseForm/>
-            <ExpensesTable columns={["Username", "Popis", "Částka"]} list={expenseList} titleOfTable={"Pohledávky"}/>
+            <ExpensesTable columns={["Username / Skupina", "Popis", "Částka"]} list={expenseList} titleOfTable={"Pohledávky"}/>
         </div>
     );
 };

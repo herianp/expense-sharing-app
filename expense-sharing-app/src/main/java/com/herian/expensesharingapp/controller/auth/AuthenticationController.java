@@ -7,6 +7,7 @@ import com.herian.expensesharingapp.dto.auth.RegisterRequest;
 import com.herian.expensesharingapp.entity.Person;
 import com.herian.expensesharingapp.repository.PersonRepository;
 import com.herian.expensesharingapp.service.AuthenticationService;
+import com.herian.expensesharingapp.service.impl.GroupServiceImpl;
 import com.herian.expensesharingapp.service.impl.PersonServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
+    private final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {

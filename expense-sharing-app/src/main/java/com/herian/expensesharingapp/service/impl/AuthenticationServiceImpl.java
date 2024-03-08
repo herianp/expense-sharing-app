@@ -10,6 +10,8 @@ import com.herian.expensesharingapp.repository.PersonRepository;
 import com.herian.expensesharingapp.service.AuthenticationService;
 import com.herian.expensesharingapp.service.mapper.EntityMapper;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +29,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JWTServiceImpl jwtService;
     private final AuthenticationManager authenticationManager;
+    private final Logger logger = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
+
 
     private final EntityMapper entityMapper;
 

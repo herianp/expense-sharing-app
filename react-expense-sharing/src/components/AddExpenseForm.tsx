@@ -12,6 +12,7 @@ const AddExpenseForm: React.FC<AddExpenseFormProps> = () => {
     const [selectedFriendId, setSelectedFriendId] = useState("");
 
     const addExpense = useStore(state => state.addExpense)
+    const addExpenseWithDebt = useStore(state => state.addExpenseWithDebt)
     const person = useStore((state) => state.person);
     const friends = useStore((state) => state.friends);
 
@@ -24,13 +25,14 @@ const AddExpenseForm: React.FC<AddExpenseFormProps> = () => {
             amount: Number(amount),
             createdAt: undefined,
             description: description,
-            personId: person.id,
+            personIdWhoHasToBePayed: person.id,
             dueDate: undefined,
             personIdWhoIsPay: Number(selectedFriendId),
             personNameWhoIsPay: undefined,
             groupId: undefined
         }
-        await addExpense(expenseDto);
+        // await addExpense(expenseDto);
+        await addExpenseWithDebt(expenseDto);
         setSelectedFriendId(""); // Clear the email input field
         setAmount("");
         setDescription("");
@@ -39,9 +41,13 @@ const AddExpenseForm: React.FC<AddExpenseFormProps> = () => {
     return (
         <form onSubmit={handleAddExpense}>
             <div className="form-group mb-3">
+                <label htmlFor="select" className="form-label">
+                    Kdo mi dluží
+                </label>
                 <select className="form-select mb-3" aria-label=".form-select-lg example"
                         value={selectedFriendId}
                         onChange={(e: ChangeEvent<HTMLSelectElement>) => setSelectedFriendId(e.target.value)}
+                        id="select"
                         required>
                     <option value="">Nezvoleno</option>
                     {/* Přidána možnost pro "nezvoleno" */}
@@ -52,8 +58,6 @@ const AddExpenseForm: React.FC<AddExpenseFormProps> = () => {
                         </option>
                     ))}
                 </select>
-                <p>Friend ID: {selectedFriendId}</p>
-                <p>Person ID: {person.id}</p>
                 <div className="form-group">
                     <label htmlFor="descriptionArea" className="form-label">
                         Popis
@@ -84,7 +88,7 @@ const AddExpenseForm: React.FC<AddExpenseFormProps> = () => {
             </div>
             <div className="d-grid">
                 <button type="submit" className="btn btn-dark btn-lg">
-                    Vytvořit pohledávku
+                Vytvořit pohledávku
                 </button>
             </div>
         </form>

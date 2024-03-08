@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("api/person")
@@ -25,6 +27,12 @@ public class PersonController {
         PersonDto personDto = personService.findOneByEmail(email);
         logger.info("PersonDTO friends: " + personDto.getPersonFriends());
         return ResponseEntity.status(HttpStatus.OK).body(personDto);
+    }
+
+    @GetMapping("/group/{groupName}")
+    public ResponseEntity<List<PersonDto>> getPersonListByGroupName(@PathVariable String groupName) {
+        List<PersonDto> personDtoList = personService.findPersonListByGroupName(groupName);
+        return ResponseEntity.status(HttpStatus.OK).body(personDtoList);
     }
 
     @PostMapping("/friend/{email}")
