@@ -219,7 +219,6 @@ public class GroupServiceImpl implements GroupService {
                     .orElseThrow(() -> new NoSuchElementException("Map is empty"));
 
             System.out.println("Maximum: " + maxEntry.getValue() + "; Minimum: " + minEntry.getValue());
-
             if (Math.abs(maxEntry.getValue()) > Math.abs(minEntry.getValue())) {
                 System.out.println("Vytvoří se dluh " + Math.abs(minEntry.getValue() * expenseValueSum) + " od: " + minEntry.getKey() + " pro " + maxEntry.getKey());
                 createExpenseWithDebt(minEntry.getKey(), maxEntry.getKey(), Math.abs(minEntry.getValue() * expenseValueSum), group.get());
@@ -265,11 +264,14 @@ public class GroupServiceImpl implements GroupService {
         }
     }
 
-    public void createExpenseWithDebt(String personUsernameFrom, String personUsernameTo, float amount, Group group){
+    public void createExpenseWithDebt(String personUsernameFrom, String personUsernameTo, float amount, Group group) {
+        if (amount < 0.01f) {
+            return;
+        }
         Optional<Person> personFrom = group.getPersonList().stream().filter(person -> person.getMy_username().equals(personUsernameFrom)).findFirst();
         Optional<Person> personTo = group.getPersonList().stream().filter(person -> person.getMy_username().equals(personUsernameTo)).findFirst();
         ExpenseDto expenseDto = new ExpenseDto();
-        expenseDto.setAmount((long)amount);
+        expenseDto.setAmount((long) amount);
         expenseDto.setDescription("Skupina: " + group.getName());
         expenseDto.setPersonIdWhoIsPay(personFrom.get().getId());
         expenseDto.setPersonIdWhoHasToBePayed(personTo.get().getId());
