@@ -219,9 +219,6 @@ public class GroupServiceImpl implements GroupService {
                     .orElseThrow(() -> new NoSuchElementException("Map is empty"));
 
             System.out.println("Maximum: " + maxEntry.getValue() + "; Minimum: " + minEntry.getValue());
-            if(maxEntry.getValue() < 0 || minEntry.getValue() < 0){
-                break;
-            }
 
             if (Math.abs(maxEntry.getValue()) > Math.abs(minEntry.getValue())) {
                 System.out.println("Vytvoří se dluh " + Math.abs(minEntry.getValue() * expenseValueSum) + " od: " + minEntry.getKey() + " pro " + maxEntry.getKey());
